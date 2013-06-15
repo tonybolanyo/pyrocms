@@ -7,7 +7,7 @@
 			<?php echo form_open(uri_string(), 'class="crud"') ?>
 			<!-- Available Widget List -->
 		
-			<table border="0" id="widgets-list" class="table-list" cellspacing="0">
+			<table id="widgets-list" class="table table-hover table-striped">
 				<thead>
 				<tr>
 					<th width="30"></th>
@@ -15,7 +15,7 @@
 					<th width="20%"><?php echo lang('global:title') ?></th>
 					<th><?php echo lang('desc_label') ?></th>
 					<th width="130"><?php echo lang('global:author') ?></th>
-					<th width="80" class="align-center"><?php echo lang('version_label') ?></th>
+					<th width="80" class="text-center"><?php echo lang('version_label') ?></th>
 					<th width="150"></th>
 				</tr>
 				</thead>
@@ -36,8 +36,8 @@
 						<td>
 							<?php echo $widget->website ? anchor($widget->website, $widget->author, array('target' => '_blank')) : $widget->author ?>
 						</td>
-						<td class="align-center"><?php echo $widget->version ?></td>
-						<td class="align-center buttons buttons-small actions">
+						<td class="text-center"><?php echo $widget->version ?></td>
+						<td class="text-center buttons buttons-small actions">
 						<?php if ($widgets_active): ?>
 							<?php echo anchor('admin/widgets/disable/' . $widget->id, lang('buttons:disable'), 'class="button disable"') ?>
 						<?php else: ?>

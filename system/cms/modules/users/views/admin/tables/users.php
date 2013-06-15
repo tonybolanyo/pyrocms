@@ -1,8 +1,8 @@
 <?php if (!empty($users)): ?>
-	<table border="0" class="table-list" cellpadding="0" cellspacing="0">
+	<table class="table table-hover table-striped" cellpadding="0">
 		<thead>
 			<tr>
-				<th with="30" class="align-center"><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>
+				<th with="30" class="text-center"><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>
 				<th><?php echo lang('user:name_label');?></th>
 				<th class="collapse"><?php echo lang('user:email_label');?></th>
 				<th><?php echo lang('user:group_label');?></th>
@@ -23,7 +23,7 @@
 			<?php $link_profiles = Settings::get('enable_profiles') ?>
 			<?php foreach ($users as $member): ?>
 				<tr>
-					<td class="align-center"><?php echo form_checkbox('action_to[]', $member->id) ?></td>
+					<td class="text-center"><?php echo form_checkbox('action_to[]', $member->id) ?></td>
 					<td>
 					<?php if ($link_profiles) : ?>
 						<?php echo anchor('admin/users/preview/' . $member->id, $member->display_name, 'target="_blank" class="modal-large"') ?>

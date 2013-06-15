@@ -10,7 +10,7 @@
 	
 		    <?php echo form_open('admin/templates/action') ?>
 		
-		    <table border="0" class="table-list" cellspacing="0">
+		    <table class="table table-hover table-striped">
 		        <thead>
 		            <tr>
 		                <th><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>
@@ -31,7 +31,7 @@
 		                <td class="collapse"><?php echo $template->description ?></td>
 		                <td class="collapse"><?php echo $template->lang ?></td>
 		                <td class="actions">
-						<div class="buttons buttons-small align-center">
+						<div class="buttons buttons-small text-center">
 							<?php echo anchor('admin/templates/preview/' . $template->id, lang('buttons:preview'), 'class="button preview modal"') ?>
 		                    <?php echo anchor('admin/templates/edit/' . $template->id, lang('buttons:edit'), 'class="button edit"') ?>
 							<?php echo anchor('admin/templates/create_copy/' . $template->id, lang('buttons:clone'), 'class="button clone"') ?>
@@ -60,7 +60,7 @@
 	   
 	<section class="item">
 		<div class="content">
-			<table border="0" class="table-list clear-both" cellspacing="0">
+			<table class="table table-hover table-striped clear-both">
 		        <thead>
 		            <tr>
 		                <th><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>
@@ -81,7 +81,7 @@
 		                <td><?php echo $template->description ?></td>
 		                <td><?php echo $template->lang ?></td>
 		                <td class="actions">
-						<div class="buttons buttons-small align-center">
+						<div class="buttons buttons-small text-center">
 							<?php echo anchor('admin/templates/preview/' . $template->id, lang('buttons:preview'), 'class="button preview modal"') ?>
 		                    <?php echo anchor('admin/templates/edit/' . $template->id, lang('buttons:edit'), 'class="button edit"') ?>
 							<?php echo anchor('admin/templates/delete/' . $template->id, lang('buttons:delete'), 'class="button delete"') ?>

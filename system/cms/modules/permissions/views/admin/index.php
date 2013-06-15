@@ -4,7 +4,7 @@
 <section class="item">
 	<div class="content">
 		<p><?php echo lang('permissions:introduction') ?></p>
-		<table border="0" class="table-list" cellspacing="0">
+		<table class="table table-hover table-striped">
 			<thead>
 				<tr>
 					<th><?php echo lang('permissions:group') ?></th>

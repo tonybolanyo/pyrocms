@@ -7,7 +7,7 @@
 
 	<?php if ($blogs): ?>
 	
-		<table border="0" class="table-list" cellspacing="0">
+		<table class="table table-hover table-striped">
 			<thead>
 			<tr>
 				<th><?php echo lang('blog:blog_title') ?></th>

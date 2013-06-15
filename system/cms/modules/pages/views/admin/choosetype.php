@@ -4,7 +4,7 @@
 
 <section class="item">
     <div class="content">
-        <table border="0" cellspacing="0">
+        <table>
             <thead>
                 <th width="20%"><?php echo lang('global:title');?></th>
                 <th><?php echo lang('global:description');?></th>

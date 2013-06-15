@@ -8,7 +8,7 @@
 		<div class="content">
 
 	    <?php echo form_open('admin/redirects/delete') ?>
-		<table border="0" class="table-list" cellspacing="0">
+		<table class="table table-hover table-striped">
 		    <thead>
 				<tr>
 					<th width="15"><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>
@@ -32,7 +32,7 @@
 				<td><?php echo $redirect->type;?></td>
 				<td><?php echo str_replace('%', '*', $redirect->from);?></td>
 				<td><?php echo $redirect->to;?></td>
-				<td class="align-center">
+				<td class="text-center">
 				<div class="actions">
 				    <?php echo anchor('admin/redirects/edit/' . $redirect->id, lang('redirects:edit'), 'class="button edit"');?>
 					<?php echo anchor('admin/redirects/delete/' . $redirect->id, lang('redirects:delete'), array('class'=>'confirm button delete'));?>

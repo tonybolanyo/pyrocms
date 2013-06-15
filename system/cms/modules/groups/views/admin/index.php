@@ -5,7 +5,7 @@
 <section class="item">
 	<div class="content">
 		<?php if ($groups): ?>
-			<table class="table-list" cellspacing="0">
+			<table class="table table-hover table-striped">
 				<thead>
 					<tr>
 						<th width="40%"><?php echo lang('groups:name');?></th>

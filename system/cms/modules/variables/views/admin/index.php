@@ -7,7 +7,7 @@
 <?php if ($variables): ?>
 
 	<?php echo form_open('admin/variables/delete') ?>
-		<table border="0" class="table-list" cellspacing="0">
+		<table class="table table-hover table-striped">
 			<thead>
 			<tr>
 				<th width="30"><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>

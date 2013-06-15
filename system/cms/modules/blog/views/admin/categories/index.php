@@ -9,7 +9,7 @@
 
 		<?php echo form_open('admin/blog/categories/delete') ?>
 
-		<table border="0" class="table-list" cellspacing="0">
+		<table class="table table-hover table-striped">
 			<thead>
 			<tr>
 				<th width="20"><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all')) ?></th>
@@ -24,7 +24,7 @@
 					<td><?php echo form_checkbox('action_to[]', $category->id) ?></td>
 					<td><?php echo $category->title ?></td>
 					<td><?php echo $category->slug ?></td>
-					<td class="align-center buttons buttons-small">
+					<td class="text-center buttons buttons-small">
 						<?php echo anchor('admin/blog/categories/edit/'.$category->id, lang('global:edit'), 'class="button edit"') ?>
 						<?php echo anchor('admin/blog/categories/delete/'.$category->id, lang('global:delete'), 'class="confirm button delete"') ;?>
 					</td>

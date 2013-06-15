@@ -6,7 +6,7 @@
 <div class="content">
 
 <?php if ($keywords): ?>
-    <table class="table-list" cellspacing="0">
+    <table class="table table-hover table-striped">
 		<thead>
 			<tr>
 				<th width="40%"><?php echo lang('keywords:name');?></th>

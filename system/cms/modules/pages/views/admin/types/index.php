@@ -7,7 +7,7 @@
 		<?php echo form_open('admin/pages/types/delete');?>
 		
 			<?php if ( ! empty($page_types)): ?>
-				<table border="0" cellspacing="0">		    
+				<table>		    
 					<thead>
 						<tr>
                             <th width="20%"><?php echo lang('global:title');?></th>
