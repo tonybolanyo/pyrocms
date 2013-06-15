@@ -1,0 +1,40 @@
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ol.example li.placeholder {
+  position: relative;
+  /** More li styles **/
+}
+ol.example li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+}
+
+
+
+/**
+ * Sortable Tabs
+ */
+
+.sortable.nav.nav-tabs
+{
+	position: relative;
+}
+
+.sortable.nav.nav-tabs li.placeholder
+{
+	width: 70px;
+	height: 34px;
+	border: 1px dashed @grayLight;
+  border-bottom: none;
+	background: @white;
+	
+	.border-radius(4px 4px 0 0);
+}
