@@ -146,7 +146,7 @@ class Fields_m extends CI_Model {
 	 * @param	[array - any extra data]
 	 * @return	bool
 	 */
-	public function insert_field($field_name, $field_slug, $field_type, $field_namespace, $extra = array(), $locked = 'no')
+	public function insert_field($field_name, $field_slug, $field_type, $field_namespace, $field_map = '', $extra = array(), $locked = 'no')
 	{
 		if ( ! $locked)
 		{
@@ -163,6 +163,7 @@ class Fields_m extends CI_Model {
 			'field_slug'		=> $field_slug,
 			'field_namespace'	=> $field_namespace,
 			'field_type'		=> $field_type,
+			'field_map'			=> $field_map,
 			'is_locked'			=> $locked
 		);
 	
@@ -416,6 +417,7 @@ class Fields_m extends CI_Model {
 		if (isset($data['field_slug'])) 		$update_data['field_slug']		= $data['field_slug'];
 		if (isset($data['field_namespace'])) 	$update_data['field_namespace']	= $data['field_namespace'];
 		if (isset($data['field_type']))			$update_data['field_type']		= $data['field_type'];
+		if (isset($data['field_map']))			$update_data['field_map']		= $data['field_map'];
 
 		if (isset($data['is_locked']))
 		{
