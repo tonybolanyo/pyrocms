@@ -1,8 +1,23 @@
 <?php $this->load->view('admin/partials/streams/filters'); ?>
 
-<?php if ($entries) { ?>
+<?php if ($entries): ?>
 
-    <table class="table">
+	
+	<?php if ($this->input->get('search-'.$stream->stream_slug.'-term')): ?>
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+
+			<?php foreach (explode('|', $this->input->get('search-'.$stream->stream_slug)) as $column): ?>
+				$('table.streams-<?php echo $stream->stream_slug; ?>-entries-table td.streams-<?php echo $column; ?>-column').highlight('<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>');
+			<?php endforeach; ?>
+		});
+
+	</script>
+	<?php endif; ?>
+
+
+    <table class="table streams-<?php echo $stream->stream_slug; ?>-entries-table">
 		<thead>
 			<tr>
 				<?php if ($this->input->get($stream->stream_slug.'-columns')): ?>
@@ -27,7 +42,7 @@
 				<?php if ($this->input->get($stream->stream_slug.'-columns')): ?>
 
 					<?php foreach( explode('|', $this->input->get($stream->stream_slug.'-columns')) as $column ): ?>
-					<td>
+					<td class="streams-<?php echo $column; ?>-column">
 					<?php
 					
 						if ($column == 'created' or $column == 'updated')
@@ -52,7 +67,7 @@
 
 					<?php if (is_array($stream->view_options)): ?>
 						<?php foreach( $stream->view_options as $view_option ): ?>
-						<td>
+						<td class="streams-<?php echo $view_option; ?>-column">
 										
 						<?php
 						
@@ -103,10 +118,13 @@
 		<?php } ?>
 		</tbody>
     </table>
-    
-<?php echo $pagination['links']; ?>
 
-<?php } else { ?>
+
+	<div class="padding-left padding-right">
+		<?php echo $pagination['links']; ?>
+	</div>
+
+<?php else: ?>
 
 <div class="alert margin">
 	<?php
@@ -123,4 +141,4 @@
 	?>
 </div><!--.no_data-->
 
-<?php } ?>
+<?php endif; ?>

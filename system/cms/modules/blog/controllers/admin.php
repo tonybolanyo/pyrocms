@@ -110,48 +110,48 @@ class Admin extends Admin_Controller
 	 */
 	public function index()
 	{
-		//set the base/default where clause
-		$base_where = array('show_future' => true, 'status' => 'all');
+		// Build the list
+		$this->streams->cp->entries_table(
+			'blog',
+			'blogs',
+			$pagination = $this->settings->records_per_page,
+			$pagination_uri = 'admin/'.$this->module_details['slug'].'/'.$this->router->class.'/'.$this->router->method,
+			$view_override = true,
+			$extra = array(
 
-		//add post values to base_where if f_module is posted
-		if ($this->input->post('f_category'))
-		{
-			$base_where['category'] = $this->input->post('f_category');
-		}
+				// Title
+				'title' => $this->module_details['name'],
+				
+				// Filters
+				'filters' => array(
 
-		if ($this->input->post('f_status'))
-		{
-			$base_where['status'] = $this->input->post('f_status');
-		}
+					// Search fields
+					'search' => array('title', 'intro', 'body'),
 
-		if ($this->input->post('f_keywords'))
-		{
-			$base_where['keywords'] = $this->input->post('f_keywords');
-		}
+					// Advanced Filters
+					//'advanced_filters' => process_additional_filters($this->stream->stream_slug, $this->stream->stream_namespace),
+					),
 
-		// Create pagination links
-		$total_rows = $this->blog_m->count_by($base_where);
-		$pagination = create_pagination('admin/blog/index', $total_rows);
-
-		// Using this data, get the relevant results
-		$blog = $this->blog_m
-			->limit($pagination['limit'], $pagination['offset'])
-			->get_many_by($base_where);
-
-		//do we need to unset the layout because the request is ajax?
-		$this->input->is_ajax_request() and $this->template->set_layout(false);
-
-		$this->template
-			->title($this->module_details['name'])
-			->append_js('admin/filter.js')
-			->set_partial('filters', 'admin/partials/filters')
-			->set('pagination', $pagination)
-			->set('blog', $blog);
-
-		$this->input->is_ajax_request()
-			? $this->template->build('admin/tables/posts')
-			: $this->template->build('admin/index');
-
+				// Buttons
+				'buttons' => array(
+					array(
+						'label' => lang('global:view'),
+						'class' => 'btn btn-small',
+						'url' => 'admin/'.$this->module_details['slug'].'/'.$this->router->class.'/view/-entry_id-'
+						),
+					array(
+						'label' => lang('global:edit'),
+						'class' => 'btn btn-small btn-warning',
+						'url' => 'admin/'.$this->module_details['slug'].'/'.$this->router->class.'/edit/-entry_id-'
+						),
+					array(
+						'label' => lang('global:delete'),
+						'class' => 'confirm btn btn-small btn-danger',
+						'url' => 'admin/'.$this->module_details['slug'].'/'.$this->router->class.'/delete/-entry_id-'
+						),
+					),
+				)
+			);
 	}
 
 	/**

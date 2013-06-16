@@ -19,7 +19,7 @@
 			if ($(this).is(':checked'))
 			{
 				// If it's not in our desired columns.. remove it from sorting too
-				$(this).closest('.tab-content').find('.dd.column-order').append('<li class="dd-item" data-assignment="' + $(this).data('assignment') + '"><div class="dd-handle">' + $(this).closest('label').text() + '</div></li>');
+				$(this).closest('.tab-content').find('.dd.column-order').append('<li class="dd-item" data-assignment="' + $(this).data('assignment') + '"><div class="dd-handle dd3-handle"></div><div class="dd3-content">' + $(this).closest('label').text() + '</div></li>');
 			}
 			else
 			{
@@ -37,18 +37,14 @@
 		$('.dd.column-order').on('change', function() {
 
 			// Ready..
-			var columns = new Array();
+			var assignments = new Array();
 
 			$('.dd li').each(function(){
 
-			// Load er up
-			columns.push($(this).data('assignment'));
+				// Load er up
+				assignments.push($(this).data('assignment'));
 
 			});
-
-			// Update the value
-			$(this).closest('.tab-content').find('.view-columns-input').val(columns.join('|'));
-
 		});
 
 	});

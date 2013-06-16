@@ -72,6 +72,15 @@
 
 			<?php endif; ?>
 
+			<?php if (property_exists($field, 'field_map')): ?>
+
+			<li class="row-fluid input-row">
+				<label class="span3" for="field_map"><?php echo lang('streams:label.field_map');?><br /><small><?php echo lang('streams:instr.field_map');?></small></label>
+				<div class="input span9"><?php echo form_textarea('field_map', $field->field_map, 'id="field_map"');?></div>
+			</li>
+
+			<?php endif; ?>
+
 			<?php if ($allow_title_column_set): ?>
 			<li class="row-fluid input-row">
 				<label class="span3" for="title_column"><?php echo lang('streams:label.make_field_title_column');?></label>

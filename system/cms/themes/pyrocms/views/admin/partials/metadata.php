@@ -24,6 +24,7 @@
 			// Plugins
 			'plugins/chosen.js',
 			'plugins/cooki.js',
+			'plugins/highlight.js',
 			'plugins/log.js',
 			'plugins/slugify.js',
 			'plugins/sortable.js',

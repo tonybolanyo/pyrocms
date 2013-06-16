@@ -9,10 +9,6 @@
 				Customize Results <i class="icon-cogs"></i>
 			</a>
 
-
-			<!-- Save our current options - as a view -->
-			<a href="#" class="btn btn-small">Save as view</a>
-
 		</section>
 
 </div>

@@ -328,6 +328,12 @@ jQuery(function($) {
 		// Handle persistent collapse / expand API on page load
 		$('[data-toggle^="toggle"][data-persistent^="true"]').each(function(){
 
+			// Skip ones with explicit status attributes
+			if ($(this).data('state') != undefined)
+			{
+				return true; // same as continue;
+			}
+
 			// What are we toggling?
 			var target = $(this).data('target');
 
@@ -347,6 +353,24 @@ jQuery(function($) {
 				$(this).find('i').addClass('icon-chevron-down').addClass('icon-chevron-' + $(this).data('collapsed-chevron'));
 			}
 
+		});
+
+
+		// Handle forced state collapse / expand API on page load
+		$('[data-toggle^="toggle"][data-state]').each(function(){
+
+			// What are we toggling?
+			var target = $(this).data('target');
+
+			// Toggle appropriatly
+			if ($(this).data('state') == 'hidden')
+			{
+				$(target).hide();
+			}
+			else
+			{
+				$(target).show();
+			}
 		});
 	};
 
@@ -493,14 +517,6 @@ jQuery(function($) {
 			
 			});
 	
-			//listener for pagination
-			$('body').on('click', '.pagination a', function(event){
-				event.preventDefault();
-				url = $(this).attr('href');
-				form_data = pyro.filter.$filter_form.serialize();
-				pyro.filter.do_filter(pyro.filter.f_module, form_data, url);
-			});
-			
 			//clear filters
 			$('a.cancel', pyro.filter.$filter_form).click(function() {
 			
