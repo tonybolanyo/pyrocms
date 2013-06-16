@@ -74,6 +74,9 @@ class Streams_fields extends CI_Driver {
 			return false;
 		}
 
+		// Set field_map
+		$field_map = isset($field_map) ? $field_map : '';
+
 		// Set locked 
 		$locked = (isset($locked) and $locked === true) ? 'yes' : 'no';
 		
