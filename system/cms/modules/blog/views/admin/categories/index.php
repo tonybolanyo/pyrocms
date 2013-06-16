@@ -34,9 +34,13 @@
 							<td><?php echo form_checkbox('action_to[]', $category->id) ?></td>
 							<td><?php echo $category->title ?></td>
 							<td><?php echo $category->slug ?></td>
-							<td class="text-center buttons buttons-small">
-								<?php echo anchor('admin/blog/categories/edit/'.$category->id, lang('global:edit'), 'class="button edit"') ?>
-								<?php echo anchor('admin/blog/categories/delete/'.$category->id, lang('global:delete'), 'class="confirm button delete"') ;?>
+							<td>
+
+								<div class="pull-right">
+									<?php echo anchor('admin/blog/categories/edit/'.$category->id, lang('global:edit'), 'class="btn btn-small btn-warning"') ?>
+									<?php echo anchor('admin/blog/categories/delete/'.$category->id, lang('global:delete'), 'class="confirm btn btn-small btn-danger"') ;?>
+								</div>
+
 							</td>
 						</tr>
 						<?php endforeach ?>
