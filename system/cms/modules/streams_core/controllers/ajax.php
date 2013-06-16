@@ -141,6 +141,76 @@ class Ajax extends MY_Controller {
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Update tab assignments order
+	 *
+	 * Accessed via AJAX
+	 *
+	 * @return	void
+	 */
+	public function update_tab_assignments_order()
+	{
+		// Build our desired order
+		foreach ($this->input->post('columns') as $k => $assign_id)
+		{
+			$this->db
+				->where('stream_id', $this->input->post('stream_id'))
+				->where('form_id', $this->input->post('form_id'))
+				->where('tab_id', $this->input->post('tab_id'))
+				->where('assign_id', $assign_id)
+				->update('data_tab_assignments', array('sort_order' => $k));
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Update tab assignments order
+	 *
+	 * Accessed via AJAX
+	 *
+	 * @return	void
+	 */
+	public function update_tabs_order()
+	{
+		// Build our desired order
+		foreach ($this->input->post('tabs') as $k => $tab)
+		{
+			$this->db
+				->where('id', $tab)
+				->update('data_tabs', array('sort_order' => $k));
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Update view assignments sort order
+	 *
+	 * Accessed via AJAX
+	 *
+	 * @return	void
+	 */
+	public function update_view_assignments_order()
+	{
+		foreach ($this->input->post('assignments') as $sort_order => $assign_id)
+		{
+			$this->db->update(
+				'data_view_assignments',
+				array(
+					'sort_order' => $sort_order,
+					),
+				array(
+					'stream_id' => $this->input->post('stream_id'),
+					'view_id' => $this->input->post('view_id'),
+					'assign_id' => $assign_id,
+					)
+				);
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Update the entries order
 	 *
 	 * Accessed via AJAX
