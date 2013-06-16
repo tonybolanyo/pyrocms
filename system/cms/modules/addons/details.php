@@ -102,7 +102,7 @@ class Module_Addons extends Module
 				array(
 					'name' => 'global:upload',
 					'uri' => 'admin/addons/modules/upload',
-					'class' => 'add',
+					'class' => 'btn btn-success',
 				),
 			);
 
@@ -110,7 +110,8 @@ class Module_Addons extends Module
 				array(
 					'name' => 'global:upload',
 					'uri' => 'admin/addons/themes/upload',
-					'class' => 'add modal',
+					'class' => 'btn btn-success',
+					'data-toggle' => 'modal',
 				),
 			);
 		}

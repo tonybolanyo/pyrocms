@@ -73,7 +73,7 @@ class Module_Redirects extends Module {
 				array(
 				    'name' => 'redirects:add_title',
 				    'uri' => 'admin/redirects/add',
-				    'class' => 'add',
+				    'class' => 'btn btn-success',
 				),
 		    ),
 		);

@@ -76,7 +76,7 @@ class Module_Blog extends Module
 						array(
 							'name' => 'blog:create_title',
 							'uri' => 'admin/blog/create',
-							'class' => 'add',
+							'class' => 'btn btn-success',
 						),
 					),
 				),
@@ -87,7 +87,7 @@ class Module_Blog extends Module
 						array(
 							'name' => 'cat:create_title',
 							'uri' => 'admin/blog/categories/create',
-							'class' => 'add',
+							'class' => 'btn btn-success',
 						),
 					),
 				),
@@ -105,7 +105,7 @@ class Module_Blog extends Module
 									'create' => array(
 										'name' 	=> 'streams:add_field',
 										'uri' 	=> 'admin/blog/fields/create',
-										'class' => 'add'
+										'class' => 'btn btn-success'
 										)
 									)
 							);

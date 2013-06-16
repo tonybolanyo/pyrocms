@@ -75,7 +75,7 @@ class Module_Navigation extends Module {
 				array(
 				    'name' => 'nav:group_create_title',
 				    'uri' => 'admin/navigation/groups/create',
-				    'class' => 'add',
+				    'class' => 'btn btn-success',
 				),
 		    ),
 		);

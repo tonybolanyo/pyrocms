@@ -104,7 +104,7 @@ class Module_Pages extends Module
 					array(
 					    'name' => 'pages:create_title',
 					    'uri' => 'admin/pages/choose_type?modal=true',
-					    'class' => 'add modal'
+					    'class' => 'btn btn-success modal'
 					)
 				);
 			}
@@ -117,7 +117,7 @@ class Module_Pages extends Module
 					array(
 					    'name' => 'pages:create_title',
 					    'uri' => 'admin/pages/create?page_type='.$page_type->id,
-					    'class' => 'add'
+					    'class' => 'btn btn-success'
 					)
 				);			
 			}
@@ -129,7 +129,7 @@ class Module_Pages extends Module
 								array(
 								    'name' => 'streams:new_field',
 								    'uri' => 'admin/pages/types/fields/'.$this->uri->segment(5).'/new_field',
-								    'class' => 'add'
+								    'class' => 'btn btn-success'
 								)
 						    );
 			}
@@ -139,7 +139,7 @@ class Module_Pages extends Module
 								array(
 								    'name' => 'pages:types_create_title',
 								    'uri' => 'admin/pages/types/create',
-								    'class' => 'add'
+								    'class' => 'btn btn-success'
 								)
 							);			
 			}
