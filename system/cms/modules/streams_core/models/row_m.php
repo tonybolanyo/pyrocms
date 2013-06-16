@@ -223,77 +223,117 @@ class Row_m extends MY_Model {
 
 		$filter_api = array();
 
+		
+		// First check for simple searching
+		if ($this->input->get('search-'.$stream->stream_slug) and $this->input->get('search-'.$stream->stream_slug.'-term'))
+		{
+			$search = array();
+
+			foreach (explode('|', $this->input->get('search-'.$stream->stream_slug)) as $filter)
+			{
+				$search[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' LIKE "%'.urldecode($this->input->get('search-'.$stream->stream_slug.'-term')).'%"';
+			}
+			
+			// Add our search fragment
+			$filter_api[] = ' ( '.implode(' OR ', $search).' ) ';
+		}
+
+
+		// Now check for advanced filters
 		if ($this->input->get('filter-'.$stream->stream_slug))
 		{
 			// Get all URL variables
 			$url_variables = $this->input->get();
 
-			$processed = array();
-
 			// Loop and process
 			foreach ($url_variables as $filter => $value)
 			{
 				// -------------------------------------
-				// Filter API Params
+				// Filter Field
 				// -------------------------------------
-				// They all start with f-
-				// No value? No soup for you!
-				// -------------------------------------
-
-				if (substr($filter, 0, 2) != 'f-') continue;	// Not a filter API parameter
-
-				if (strlen($value) == 0) continue;				// No value.. boo
-
-				$filter = substr($filter, 2);					// Remove identifier
-
-
-				// -------------------------------------
-				// Not
-				// -------------------------------------
-				// Default: false
+				// Filters all start with f-
+				// Like: f-$stream_slug-$field_slug
+				// First.. do some validation!
 				// -------------------------------------
 
-				$not = substr($filter, 0, 4) == 'not-';
+				// Filter API parameters only
+				if (substr($filter, 0, 2) != 'f-') continue;
 
-				if ($not) $filter = substr($filter, 4);			// Remove identifier
+				// Remove identifier
+				$filter = substr($filter, 2);
 
+				// Stick to the stream in question
+				if (current(explode('-', $filter)) != $stream->stream_slug) continue;
 
-				// -------------------------------------
-				// Exact
-				// -------------------------------------
-				// Default: false
-				// -------------------------------------
+				// Isolate the field slug
+				$filter = end(explode('-', $filter));
 
-				$exact = substr($filter, 0, 6) == 'exact-';
-
-				if ($exact) $filter = substr($filter, 6);		// Remove identifier
+				// Neeeed a value son!
+				if (strlen($value) == 0 and $this->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'isempty' and $this->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'notempty') continue;
 
 
 				// -------------------------------------
-				// Construct the where segment
+				// NICE! Now figure out the condition
+				// -------------------------------------
+				// is
+				// isnot
+				// contains
+				// doesnotcontain
+				// startswith
+				// endswith
+				// isempty
+				// notempty
 				// -------------------------------------
 
-				if ($exact)
+				$value = urldecode(str_replace($stream->stream_slug.'-', '', $value));
+
+				switch ($this->input->get($stream->stream_slug.'-'.$filter.'-f-condition'))
 				{
-					if ($not)
-					{
-						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' != "'.urldecode($value).'"';
-					}
-					else
-					{
-						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "'.urldecode($value).'"';
-					}
-				}
-				else
-				{
-					if ($not)
-					{
-						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' NOT LIKE "%'.urldecode($value).'%"';
-					}
-					else
-					{
-						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' LIKE "%'.urldecode($value).'%"';
-					}
+
+					case 'is':
+						// Like another field?
+						if (substr($value, 0, 2) == '${')
+						{
+							$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = '.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.trim(substr($value, 2, -1)));
+						}
+						else
+						{
+							$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "'.$value.'"';
+						}
+						break;
+
+					case 'isnot':
+						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' != "'.$value.'"';
+						break;
+
+					case 'contains':
+						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' LIKE "%'.$value.'%"';
+						break;
+
+					case 'doesnotcontain':
+						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' NOT LIKE "%'.$value.'%"';
+						break;
+
+					case 'startswith':
+						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' LIKE "'.$value.'%"';
+						break;
+
+					case 'endswith':
+						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' LIKE "%'.$value.'"';
+						break;
+
+					case 'isempty':
+						$filter_api[] = ' ('.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NULL OR '.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "") ';
+						break;
+
+					case 'notempty':
+						$filter_api[] = ' ('.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NOT NULL AND '.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' != "") ';
+						break;
+					
+					default:
+						// is
+						$filter_api[] = $this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "'.$value.'"';
+						break;
 				}
 			}
 		}
