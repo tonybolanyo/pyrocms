@@ -1,4 +1,4 @@
-<?php Asset::js(array('jquery.min.js', 'plugins/ckeditor/ckeditor.js', 'plugins/ckeditor/adapters/jquery.js')); ?>
+<?php Asset::js(array('application/jquery.js', 'plugins/ckeditor/ckeditor.js', 'plugins/ckeditor/adapters/jquery.js')); ?>
 <?php echo Asset::render(); ?>
 <script type="text/javascript">
 

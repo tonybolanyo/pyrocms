@@ -6,8 +6,8 @@
 ?>
 
 <script type="text/javascript">pyro = {};</script>
-<script src="<?php echo Asset::get_filepath_js('admin::ckeditor/ckeditor.js') ?>"></script>
-<script src="<?php echo Asset::get_filepath_js('admin::ckeditor/adapters/jquery.js') ?>"></script>
+<script src="<?php echo Asset::get_filepath_js('admin::plugins/ckeditor/ckeditor.js') ?>"></script>
+<script src="<?php echo Asset::get_filepath_js('admin::plugins/ckeditor/adapters/jquery.js') ?>"></script>
 
 <script type="text/javascript">
 
