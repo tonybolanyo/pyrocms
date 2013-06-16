@@ -5,7 +5,7 @@
 <section class="item">
 	<div class="content">
 		<ul>
-			<li class="even">
+			<li>
 			    <label for="lang"><?php echo lang('templates:choose_lang_label') ?></label>
 			    <?php echo form_dropdown('lang', $lang_options) ?>
 			</li>

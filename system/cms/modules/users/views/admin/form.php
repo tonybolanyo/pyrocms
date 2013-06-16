@@ -24,7 +24,7 @@
 			<div class="form_inputs" id="user-basic-data-tab">
 				<fieldset>
 					<ul>
-						<li class="even">
+						<li>
 							<label for="email"><?php echo lang('global:email') ?> <span>*</span></label>
 							<div class="input">
 								<?php echo form_input('email', $member->email, 'id="email"') ?>
@@ -45,14 +45,14 @@
 							</div>
 						</li>
 						
-						<li class="even">
+						<li>
 							<label for="active"><?php echo lang('user:activate_label') ?></label>
 							<div class="input">
 								<?php $options = array(0 => lang('user:do_not_activate'), 1 => lang('user:active'), 2 => lang('user:send_activation_email')) ?>
 								<?php echo form_dropdown('active', $options, $member->active, 'id="active"') ?>
 							</div>
 						</li>
-						<li class="even">
+						<li>
 							<label for="password">
 								<?php echo lang('global:password') ?>
 								<?php if ($this->method == 'create'): ?> <span>*</span><?php endif ?>

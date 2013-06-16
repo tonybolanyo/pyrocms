@@ -14,7 +14,7 @@
 			<span class="required-icon tooltip"><?php echo lang('required_label') ?></span>
 		</li>
 	
-		<li class="even">
+		<li>
 			<label for="slug"><?php echo lang('widgets:widget_area_slug') ?></label>
 			<?php echo form_input('slug', $area->slug, 'class="new-area-slug"') ?>
 			<span class="required-icon tooltip"><?php echo lang('required_label') ?></span>

@@ -15,7 +15,7 @@
 		<div class="form_inputs">
 		
 			<ul>
-				<li class="even">
+				<li>
 					<label for="name"><?php echo lang('name_label');?> <span>*</span></label>
 					<div class="input"><?php echo  form_input('name', $variable->name) ?></div>
 				</li>

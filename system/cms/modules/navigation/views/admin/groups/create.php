@@ -12,7 +12,7 @@
 		<div class="form_inputs">
 		
 		    <ul>
-			    <li class="even">
+			    <li>
 				    <label for="title"><?php echo lang('global:title');?> <span>*</span></label>
 				    <div class="input"><?php echo form_input('title', $navigation_group['title'], 'class="text"') ?></div>
 			    </li>

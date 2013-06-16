@@ -20,7 +20,7 @@
 					<div class="input"><?php echo form_input('description', $group->description);?></div>
 				</li>
 				
-				<li class="even">
+				<li>
 					<label for="name"><?php echo lang('groups:short_name');?> <span>*</span></label>
 					
 					<div class="input">

@@ -125,5 +125,8 @@
 		</section>
 		<!-- /Box Content -->
 
+	</section>
+	<!-- /Box -->
+
 </div>
 </section>
