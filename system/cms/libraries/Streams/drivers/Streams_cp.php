@@ -68,11 +68,11 @@ class Streams_cp extends CI_Driver {
 		$stream = $this->stream_obj($stream_slug, $namespace_slug);
 		if ( ! $stream) $this->log_error('invalid_stream', 'entries_table');
 
- 		// -------------------------------------
+		// -------------------------------------
 		// Get Header Fields
 		// -------------------------------------
 		
- 		$stream_fields = $CI->streams_m->get_stream_fields($stream->id);
+		$stream_fields = $CI->streams_m->get_stream_fields($stream->id);
 
  		// We need to make sure that stream_fields is 
  		// at least an empty object.
@@ -138,7 +138,6 @@ class Streams_cp extends CI_Driver {
   			'stream_fields'	=> $stream_fields,
   			'buttons'		=> isset($extra['buttons']) ? $extra['buttons'] : null,
   			'filters'		=> isset($extra['filters']) ? $extra['filters'] : null,
-  			'search_id'		=> isset($_COOKIE['streams_core_filters']) ? $_COOKIE['streams_core_filters'] : null,
   		);
  
   		// -------------------------------------
@@ -157,77 +156,120 @@ class Streams_cp extends CI_Driver {
 
 		$where = array();
 
+
+		// First check for simple searching
+		if ($CI->input->get('search-'.$stream->stream_slug) and $CI->input->get('search-'.$stream->stream_slug.'-term'))
+		{
+			$search = array();
+
+			foreach (explode('|', $CI->input->get('search-'.$stream->stream_slug)) as $filter)
+			{
+				$search[] = $CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' LIKE "%'.urldecode($CI->input->get('search-'.$stream->stream_slug.'-term')).'%"';
+			}
+			
+			// Add our search fragment
+			$where[] = ' ( '.implode(' OR ', $search).' ) ';
+		}
+
+
+		// Now check advanced filters
 		if ($CI->input->get('filter-'.$stream->stream_slug))
 		{
 			// Get all URL variables
 			$url_variables = $CI->input->get();
 
-			$processed = array();
 
 			// Loop and process
 			foreach ($url_variables as $filter => $value)
 			{
 				// -------------------------------------
-				// Filter API Params
+				// Filter Field
 				// -------------------------------------
-				// They all start with f-
-				// No value? No soup for you!
-				// -------------------------------------
-
-				if (substr($filter, 0, 2) != 'f-') continue;	// Not a filter API parameter
-
-				if (strlen($value) == 0) continue;				// No value.. boo
-
-				$filter = substr($filter, 2);					// Remove identifier
-
-
-				// -------------------------------------
-				// Not
-				// -------------------------------------
-				// Default: false
+				// Filters all start with f-
+				// Like: f-$stream_slug-$field_slug
+				// First.. do some validation!
 				// -------------------------------------
 
-				$not = substr($filter, 0, 4) == 'not-';
+				// Filter API parameters only
+				if (substr($filter, 0, 2) != 'f-') continue;
 
-				if ($not) $filter = substr($filter, 4);			// Remove identifier
+				// Remove identifier
+				$filter = substr($filter, 2);
 
+				// Stick to the stream in question
+				if (current(explode('-', $filter)) != $stream->stream_slug) continue;
 
-				// -------------------------------------
-				// Exact
-				// -------------------------------------
-				// Default: false
-				// -------------------------------------
+				// Isolate the field slug
+				$filter = end(explode('-', $filter));
 
-				$exact = substr($filter, 0, 6) == 'exact-';
-
-				if ($exact) $filter = substr($filter, 6);		// Remove identifier
-
-
-				// -------------------------------------
-				// Construct the where segment
-				// -------------------------------------
-
-				if ($exact)
+				// Neeeed a value son!
+				if ($CI->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'isempty' and $CI->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'notempty')
 				{
-					if ($not)
-					{
-						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' != "'.urldecode($value).'"';
-					}
-					else
-					{
-						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' = "'.urldecode($value).'"';
-					}
+					if (strlen($value) == 0) continue;
 				}
-				else
+
+
+				// -------------------------------------
+				// NICE! Now figure out the condition
+				// -------------------------------------
+				// is
+				// isnot
+				// contains
+				// doesnotcontain
+				// startswith
+				// endswith
+				// isempty
+				// notempty
+				// -------------------------------------
+
+				switch ($CI->input->get($stream->stream_slug.'-'.$filter.'-f-condition'))
 				{
-					if ($not)
-					{
-						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' NOT LIKE "%'.urldecode($value).'%"';
-					}
-					else
-					{
-						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' LIKE "%'.urldecode($value).'%"';
-					}
+
+					case 'is':
+
+						// Like another field?
+						if (substr($value, 0, 2) == '${')
+						{
+							$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' = '.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.trim(substr($value, 2, -1)));
+						}
+						else
+						{
+							$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' = "'.$value.'"';
+						}
+						break;
+
+					case 'isnot':
+						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' != "'.$value.'"';
+						break;
+
+					case 'contains':
+						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' LIKE "%'.$value.'%"';
+						break;
+
+					case 'doesnotcontain':
+						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' NOT LIKE "%'.$value.'%"';
+						break;
+
+					case 'startswith':
+						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' LIKE "'.$value.'%"';
+						break;
+
+					case 'endswith':
+						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' LIKE "%'.$value.'"';
+						break;
+
+					case 'isempty':
+						$where[] = ' ('.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NULL OR '.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "") ';
+						break;
+
+					case 'notempty':
+						$where[] = ' ('.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NOT NULL AND '.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' != "") ';
+						break;
+					
+					default:
+						// is
+						$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' = "'.$value.'"';
+						break;
 				}
 			}
 		}
@@ -274,11 +316,16 @@ class Streams_cp extends CI_Driver {
 			$CI->template->title(lang_label($extra['title']));
 		}
 
+		// Append our advanced filters scripts
+		$CI->template->append_js('streams/advanced_filters.js');
+
 		// Set custom no data message
 		if (isset($extra['no_entries_message']))
 		{
 			$data['no_entries_message'] = $extra['no_entries_message'];
 		}
+		
+		$CI->template->append_js('streams/customize_results.js');
 		
 		$table = $CI->load->view('admin/partials/streams/entries', $data, true);
 		
@@ -374,8 +421,6 @@ class Streams_cp extends CI_Driver {
 		{
 			$data['no_fields_message'] = $extra['no_fields_message'];
 		}
-		
-		$CI->template->append_js('streams/entry_form.js');
 		
 		if ($data['tabs'] === false)
 		{
@@ -515,6 +560,9 @@ class Streams_cp extends CI_Driver {
 
 			// We also must have a field if we're editing
 			if ( ! $data['current_field']) show_error('Could not find field.');
+
+			// The assignment needs this too
+			$assignment->field_map = $data['current_field']->field_map;
 		}
 		elseif ($method == 'new' and $_POST and $this->CI->input->post('field_type'))
 		{
@@ -576,6 +624,11 @@ class Streams_cp extends CI_Driver {
 			array(
 				'field'	=> 'instructions',
 				'label' => 'Instructions', // @todo languageize
+				'rules'	=> 'trim'
+			),
+			array(
+				'field'	=> 'field_map',
+				'label' => 'Field Map', // @todo languageize
 				'rules'	=> 'trim'
 			)
 		);
@@ -1047,21 +1100,309 @@ class Streams_cp extends CI_Driver {
 		{
 			$data['no_assignments_message'] = $extra['no_assignments_message'];
 		}
-		
-		$CI->template->append_metadata('<script>var fields_offset='.$offset.';</script>');
-		$CI->template->append_js('streams/assignments.js');
 
 		$table = $CI->load->view('admin/partials/streams/assignments', $data, true);
 		
 		if ($view_override)
 		{
 			// Hooray, we are building the template ourself.
-			$CI->template->build('admin/partials/blank_section', array('content' => $table));
+			$CI->template->build('admin/partials/blank_section', array('content' => $table, 'data' => $data));
 		}
 		else
 		{
 			// Otherwise, we are returning the table
 			return $table;
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Form Editor
+	 *
+	 * Edit the tabs in a given form
+ 	 *
+	 * @param	string - the stream slug
+	 * @param	string - the stream namespace slug
+	 * @param	string - the form slug
+	 * @return	mixed - void or string
+	 */
+	public function form_editor($stream_slug, $namespace_slug, $form_slug, $view_override = true)
+	{
+		// These are.. available!
+		$available_stream_fields = array();
+
+		// Get our stream too
+		$stream = $this->stream_obj($stream_slug, $namespace_slug);
+
+		// Get stream_fields
+		$stream_fields = $this->CI->streams_m->get_stream_fields($stream->id);
+
+		// Get all our sheet
+		$tabs = $this->CI->streams->forms->get_tabs($stream_slug, $namespace_slug, $form_slug, $available_stream_fields);
+
+		// Get our form
+		$form = $this->CI->db->select()->where('slug', $form_slug)->where('stream_id', $stream->id)->limit(1)->get('data_forms')->row(0);
+
+		// Build the form
+		$this->CI->template->append_js('streams/form_editor.js');
+
+		$tabs = $this->CI->load->view('admin/partials/streams/form_editor', array('form' => $form, 'tabs' => $tabs, 'stream_fields' => $stream_fields, 'stream' => $stream, 'available_stream_fields' => $available_stream_fields), true);
+
+		if ($view_override)
+		{
+			// Hooray, we are building the template ourself.
+			$this->CI->template->build('admin/partials/blank_section', array('content' => $tabs));
+		}
+		else
+		{
+			// Otherwise, we are returning the html
+			return $tabs;
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Views Table
+	 *
+	 * Easily create a table of views in a certain namespace
+	 *
+	 * @param	string - the stream slug
+	 * @param	string - the stream namespace slug
+	 * @param	[mixed - pagination, either null for no pagination or a number for per page]
+	 * @param	[null - pagination uri without offset]
+	 * @param	[bool - setting this to true will take care of the $this->template business
+	 * @param	[array - extra params (see below)]
+	 *
+	 * Extra parameters to pass in $extra array:
+	 *
+	 * title	- Title of the page header (if using view override)
+	 *			$extra['title'] = 'Streams Sample';
+	 * 
+	 * buttons	- an array of buttons (if using view override)
+	 *			$extra['buttons'] = array(
+	 *				'label' 	=> 'Delete',
+	 *				'url'		=> 'admin/streams_sample/delete/-entry_id-',
+	 *				'confirm'	= true
+	 *			);
+	 *
+	 * see docs for more explanation
+	 */
+	public function views_table($stream_slug, $namespace, $view_override = false, $extra = array())
+	{
+		$CI = get_instance();
+		$data['buttons'] = (isset($extra['buttons']) and is_array($extra['buttons'])) ? $extra['buttons'] : array();
+
+		// Get stream
+		$data['stream'] = $this->stream_obj($stream_slug, $namespace);
+		if ( ! $data['stream']) $this->log_error('invalid_stream', 'stream_fields_table');
+
+		// -------------------------------------
+		// Get views
+		// -------------------------------------
+
+		$data['views'] = $CI->db->select()->where('stream_id', $data['stream']->id)->order_by('title', 'ASC')->get('data_views')->result();
+
+		// -------------------------------------
+		// Get number of fields total
+		// -------------------------------------
+		
+		$data['total_existing_views'] = $CI->db->select('id')->where('stream_id', $data['stream']->id)->from('data_views')->count_all_results();
+
+		// -------------------------------------
+		// Build Pages
+		// -------------------------------------
+
+		// Set title
+		if (isset($extra['title']))
+		{
+			$CI->template->title($extra['title']);
+		}
+
+		// Set no stream_fields message
+		if (isset($extra['no_views_message']))
+		{
+			$data['no_views_message'] = $extra['no_views_message'];
+		}
+
+		$table = $CI->load->view('admin/partials/streams/views', $data, true);
+		
+		if ($view_override)
+		{
+			// Hooray, we are building the template ourself.
+			$CI->template->build('admin/partials/blank_section', array('content' => $table, 'data' => $data));
+		}
+		else
+		{
+			// Otherwise, we are returning the table
+			return $table;
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Custom View Form
+	 *
+	 * Creates a custom view form.
+	 *
+	 * This allows you to easily create a form that users can
+	 * use to add new views to a stream.
+	 *
+	 * @param	string - stream slug
+	 * @param	string - namespace
+	 * @param 	string - method - new or edit. defaults to new
+	 * @param 	string - uri to return to after success/fail
+	 * @param 	[int - the view id if we are editing]
+	 * @param	[bool - view override - setting this to true will build template]
+	 * @param	[array - extra params (see below)]
+	 * @return	mixed - void or string
+	 *
+	 * Extra parameters to pass in $extra array:
+	 *
+	 * title	- Title of the form header (if using view override)
+	 *			$extra['title'] = 'Streams Sample';
+	 * 
+	 * show_cancel - bool. Show the cancel button or not?
+	 * cancel_url - uri to link to for cancel button
+	 *
+	 * see docs for more.
+	 */
+	public function view_form($stream_slug, $namespace_slug, $method = 'new', $return, $view_id = null, $view_override = false, $extra = array())
+	{
+		$CI = get_instance();
+		$data = array();
+		$data['view'] = new stdClass;
+		
+		
+		// We always need our stream
+		$stream = $this->stream_obj($stream_slug, $namespace_slug);
+		if ( ! $stream) $this->log_error('invalid_stream', 'form');
+
+		
+		// Get our list of available fields
+		$stream_fields = $this->CI->streams_m->get_stream_fields($stream->id);
+
+		// Make stream_fields mesh with the dropdown method
+		$stream_fields_dropdown = array();
+
+		foreach ($stream_fields as $stream_field) $stream_fields_dropdown[$stream_field->assign_id] = lang_label($stream_field->field_name);
+
+		// Get the assign id of the title column
+		$title_column_assign_id = 0;
+
+		foreach ($stream_fields as $stream_field)
+		{
+			if ($stream_field->field_slug == $stream->title_column)
+			{
+				$title_column_assign_id = $stream_field->assign_id;
+			}
+		}
+
+		// -------------------------------------
+		// Get the field if we have the view
+		// -------------------------------------
+		// We'll always work off the view.
+		// -------------------------------------
+
+		if ($method == 'edit' and is_numeric($view_id))
+		{
+			$view = $CI->db->select()->limit(1)->where('id', $view_id)->get('data_views')->row();
+
+			// If we have no view, we can't continue
+			if ( ! $view) show_error('Could not find view');
+		}
+		else
+		{
+			$view->is_locked = 'no';
+			$view->title = null;
+			$view->order_by = $title_column_assign_id;
+			$view->sort = 'ASC';
+			$view->limit = 25;
+		}
+
+
+		// -------------------------------------
+		// Cancel Button
+		// -------------------------------------
+
+		$data['show_cancel'] = (isset($extra['show_cancel']) and $extra['show_cancel']) ? true : false;
+		$data['cancel_uri'] = (isset($extra['cancel_uri'])) ? $extra['cancel_uri'] : null;
+
+		
+		// -------------------------------------
+		// Process Data
+		// -------------------------------------
+
+		if ($CI->input->post())
+		{
+			$post_data = $CI->input->post();
+
+			// Make sure we have a title - it's the only thing they could mess up!
+			if (! isset($entry['title']) or empty($entry['title'])) $entry['title'] = 'Untitled view';
+
+			// Add the stream_id
+			$entry['stream_id'] = $stream->id;
+
+			// Remove the btnAction
+			unset($entry['btnAction']);
+
+			if ($method == 'new')
+			{
+				// Save
+				$CI->db->insert('data_views', $entry);
+			}
+			else
+			{
+				// Save
+				$CI->db->update('data_views', $entry, array('id' => $view_id));
+			}
+	
+			redirect($return);
+		}
+
+
+		// Set title
+		if (isset($extra['title']))
+		{
+			$CI->template->title($extra['title']);
+		}
+
+		// Set the cancel URI. If there is no cancel URI, then we won't
+		// have a cancel button.
+		$data['cancel_uri'] = (isset($extra['cancel_uri'])) ? $extra['cancel_uri'] : null;
+
+
+		// -------------------------------------
+		// Add on $data
+		// -------------------------------------
+
+		$data['method'] = $method;
+		$data['stream'] = $stream;
+		$data['stream_fields'] = $stream_fields;
+		$data['stream_fields_dropdown'] = $stream_fields_dropdown;
+		$data['view'] = $view;
+		$data['return'] = $return;
+
+
+		// -------------------------------------
+		// Build out our view
+		// -------------------------------------
+
+		$this->CI->template->append_js('streams/view_editor.js');
+
+		$form = $CI->load->view('admin/partials/streams/view_form', $data, true);
+		
+		if ($view_override)
+		{
+			// Hooray, we are building the template ourself.
+			$CI->template->build('admin/partials/blank_section', array('content' => $form));
+		}
+		else
+		{
+			// Otherwise, we are returning the form
+			return $form;
 		}
 	}
 

@@ -33,22 +33,26 @@
 		
 						<td><?php echo $module['description'] ?></td>
 						<td class="text-center"><?php echo $module['version'] ?></td>
-						<td class="actions">
-							<?php if ($module['installed']): ?>
-								<?php if ($module['enabled']): ?>
-									<?php echo anchor('admin/addons/modules/disable/'.$module['slug'], lang('global:disable'), array('class'=>'confirm button small', 'title'=>lang('addons:modules:confirm_disable'))) ?>
+						<td>
+
+							<div class="pull-right">
+								<?php if ($module['installed']): ?>
+									<?php if ($module['enabled']): ?>
+										<?php echo anchor('admin/addons/modules/disable/'.$module['slug'], lang('global:disable'), array('class'=>'confirm btn btn-small btn-danger', 'title'=>lang('addons:modules:confirm_disable'))) ?>
+									<?php else: ?>
+										<?php echo anchor('admin/addons/modules/enable/'.$module['slug'], lang('global:enable'), array('class'=>'confirm btn btn-small btn-success', 'title'=>lang('addons:modules:confirm_enable'))) ?>
+									<?php endif ?>
+									<?php if ($module['is_current']): ?>
+										<?php echo anchor('admin/addons/modules/uninstall/'.$module['slug'], lang('global:uninstall'), array('class'=>'confirm btn btn-small btn-danger', 'title'=>lang('addons:modules:confirm_uninstall'))) ?>
+									<?php else: ?>
+										<?php echo anchor('admin/addons/modules/upgrade/'.$module['slug'], lang('global:upgrade'), array('class'=>'confirm btn btn-small btn-warning', 'title'=>lang('addons:modules:confirm_upgrade'))) ?>
+									<?php endif ?>
 								<?php else: ?>
-									<?php echo anchor('admin/addons/modules/enable/'.$module['slug'], lang('global:enable'), array('class'=>'confirm button small', 'title'=>lang('addons:modules:confirm_enable'))) ?>
+									<?php echo anchor('admin/addons/modules/install/'.$module['slug'], lang('global:install'), array('class'=>'confirm btn btn-small btn-success', 'title'=>lang('addons:modules:confirm_install'))) ?>
 								<?php endif ?>
-								<?php if ($module['is_current']): ?>
-									<?php echo anchor('admin/addons/modules/uninstall/'.$module['slug'], lang('global:uninstall'), array('class'=>'confirm button small', 'title'=>lang('addons:modules:confirm_uninstall'))) ?>
-								<?php else: ?>
-									<?php echo anchor('admin/addons/modules/upgrade/'.$module['slug'], lang('global:upgrade'), array('class'=>'confirm button small', 'title'=>lang('addons:modules:confirm_upgrade'))) ?>
-								<?php endif ?>
-							<?php else: ?>
-								<?php echo anchor('admin/addons/modules/install/'.$module['slug'], lang('global:install'), array('class'=>'confirm button small', 'title'=>lang('addons:modules:confirm_install'))) ?>
-							<?php endif ?>
-							<?php echo anchor('admin/addons/modules/delete/'.$module['slug'], lang('global:delete'), array('class'=>'confirm button small', 'title'=>lang('addons:modules:confirm_delete'))) ?>
+								<?php echo anchor('admin/addons/modules/delete/'.$module['slug'], lang('global:delete'), array('class'=>'confirm btn btn-small btn-danger', 'title'=>lang('addons:modules:confirm_delete'))) ?>
+							</div>
+							
 						</td>
 					</tr>
 				<?php endforeach ?>
@@ -102,11 +106,15 @@
 						<td><?php echo $module['description'] ?></td>
 						<td class="text-center"><?php echo $module['version'] ?></td>
 						<td>
-						<?php if ($module['enabled']): ?>
-		 					<?php echo anchor('admin/addons/modules/disable/'.$module['slug'], lang('global:disable'), array('class'=>'confirm btn btn-small btn-danger', 'title'=>lang('addons:modules:confirm_disable'))) ?>
-						<?php else: ?>
-							<?php echo anchor('admin/addons/modules/enable/'.$module['slug'], lang('global:enable'), array('class'=>'confirm btn btn-small btn-success', 'title'=>lang('addons:modules:confirm_enable'))) ?>
-						<?php endif ?>
+						
+							<div class="pull-right">
+								<?php if ($module['enabled']): ?>
+				 					<?php echo anchor('admin/addons/modules/disable/'.$module['slug'], lang('global:disable'), array('class'=>'confirm btn btn-small btn-danger', 'title'=>lang('addons:modules:confirm_disable'))) ?>
+								<?php else: ?>
+									<?php echo anchor('admin/addons/modules/enable/'.$module['slug'], lang('global:enable'), array('class'=>'confirm btn btn-small btn-success', 'title'=>lang('addons:modules:confirm_enable'))) ?>
+								<?php endif ?>
+							</div>
+
 						</td>
 					</tr>
 				<?php endforeach ?>
