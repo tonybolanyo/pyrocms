@@ -48,7 +48,7 @@
 			<div class="tab-content">
 
 
-				<!-- Content -->
+				<!-- Tab Pane -->
 				<div class="tab-pane active" id="blog-content-tab">
 
 					<fieldset>
@@ -71,8 +71,8 @@
 							</li>
 					
 							<li class="editor">
-								<label class="span3" for="body"><?php echo lang('blog:content_label') ?> <span>*</span></label><br>
-								<div class="input small-side">
+								<label for="body"><?php echo lang('blog:content_label') ?> <span>*</span></label><br>
+								<div class="input margin-left">
 									<?php echo form_dropdown('type', array(
 										'html' => 'html',
 										'markdown' => 'markdown',
@@ -81,7 +81,7 @@
 									), $post->type) ?>
 								</div>
 				
-								<div class="edit-content">
+								<div class="padded">
 									<?php echo form_textarea(array('id' => 'body', 'name' => 'body', 'value' => $post->body, 'rows' => 30, 'class' => $post->type)) ?>
 								</div>
 							</li>
@@ -92,26 +92,34 @@
 					</fieldset>
 
 				</div>
-				<!-- /Content -->
+				<!-- /Tab Pane -->
 			
 
 				<?php if ($stream_fields): ?>
 
-				<div class="form_inputs" id="blog-custom-fields">
+				<!-- Tab Pane -->
+				<div class="tab-pane" id="blog-custom-fields">
+
 					<fieldset>
+
 						<ul>
 
 							<?php foreach ($stream_fields as $field) echo $this->load->view('admin/partials/streams/form_single_display', array('field' => $field), true) ?>
 
 						</ul>
+
 					</fieldset>
+
 				</div>
+				<!-- /Tab Pane -->
 
 				<?php endif; ?>
 
 				<!-- Options tab -->
-				<div class="form_inputs" id="blog-options-tab">
+				<div class="tab-pane" id="blog-options-tab">
+
 					<fieldset>
+
 						<ul>
 				
 							<li class="row-fluid input-row">
@@ -131,11 +139,11 @@
 								</li>
 							<?php endif; ?>
 				
-							<li class="date-meta">
-								<label><?php echo lang('blog:date_label') ?></label>
+							<li class="row-fluid input-row">
+								<label class="span3"><?php echo lang('blog:date_label') ?></label>
 				
-								<div class="input datetime_input">
-									<?php echo form_input('created_on', date('Y-m-d', $post->created_on), 'maxlength="10" id="datepicker" class="text width-20"') ?> &nbsp;
+								<div class="input span9">
+									<?php echo form_input('created_on', date('Y-m-d', $post->created_on), 'maxlength="10') ?> &nbsp;
 									<?php echo form_dropdown('created_on_hour', $hours, date('H', $post->created_on)) ?> :
 									<?php echo form_dropdown('created_on_minute', $minutes, date('i', ltrim($post->created_on, '0'))) ?>
 								</div>
@@ -159,13 +167,19 @@
 									</div>
 								</li>
 							<?php endif; ?>
+
 						</ul>
+
 					</fieldset>
+
 				</div>
+				<!-- Options tab -->
+
 
 				<input type="hidden" name="row_edit_id" value="<?php if ($this->method != 'create'): echo $post->id; endif; ?>" />
 
-				<div class="buttons">
+				
+				<div class="btn-group padded no-padding-bottom">
 					<?php $this->load->view('admin/partials/buttons', array('buttons' => array('save', 'save_exit', 'cancel'))) ?>
 				</div>
 

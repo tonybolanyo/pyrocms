@@ -26,7 +26,7 @@ if ( ! function_exists('tree_builder'))
 				if (isset($item['children']) and ! empty($item['children']))
 				{
 					// if there are children we build their html and set it up to be parsed as {{ children }}
-					$item['children'] = '<ul>'.tree_builder($item['children'], $html).'</ul>';
+					$item['children'] = '<ul class="dd-list">'.tree_builder($item['children'], $html).'</ul>';
 				}
 				else
 				{

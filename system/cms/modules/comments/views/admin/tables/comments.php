@@ -1,6 +1,7 @@
 <?php if ( ! empty($comments)): ?>
 
 	<table class="table table-hover table-striped">
+
 		<thead>
 			<tr>
 				<th width="20"><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all')) ?></th>
@@ -11,14 +12,6 @@
 				<th width="<?php echo Settings::get('moderate_comments') ? 265 : 120 ?>"></th>
 			</tr>
 		</thead>
-	
-		<tfoot>
-			<tr>
-				<td colspan="7">
-					<div class="inner"><?php $this->load->view('admin/partials/pagination') ?></div>
-				</td>
-			</tr>
-		</tfoot>
 	
 		<tbody>
 			<?php foreach ($comments as $comment): ?>
@@ -49,26 +42,32 @@
 				
 					<td><?php echo format_date($comment->created_on) ?></td>
 					
-					<td class="text-center buttons buttons-small">
-						<?php if ($this->settings->moderate_comments): ?>
-							<?php if ($comment->is_active): ?>
-								<?php echo anchor('admin/comments/unapprove/'.$comment->id, lang('buttons:deactivate'), 'class="button deactivate"') ?>
-							<?php else: ?>
-								<?php echo anchor('admin/comments/approve/'.$comment->id, lang('buttons:activate'), 'class="button activate"') ?>
+					<td>
+
+						<div class="btn-group pull-right">
+							<?php if ($this->settings->moderate_comments): ?>
+								<?php if ($comment->is_active): ?>
+									<?php echo anchor('admin/comments/unapprove/'.$comment->id, lang('buttons:deactivate'), 'class="btn btn-small btn-danger"') ?>
+								<?php else: ?>
+									<?php echo anchor('admin/comments/approve/'.$comment->id, lang('buttons:activate'), 'class="btn btn-small btn-success"') ?>
+								<?php endif ?>
 							<?php endif ?>
-						<?php endif ?>
-					
-						<?php echo anchor('admin/comments/edit/'.$comment->id, lang('global:edit'), 'class="button edit"') ?>
-						<?php echo anchor('admin/comments/delete/'.$comment->id, lang('global:delete'), array('class'=>'confirm button delete')) ?>
-						<?php echo anchor('admin/comments/report/'.$comment->id, 'Report', array('class'=>'button edit')) ?>
+						
+							<?php echo anchor('admin/comments/edit/'.$comment->id, lang('global:edit'), 'class="btn btn-small btn-warning"') ?>
+							<?php echo anchor('admin/comments/delete/'.$comment->id, lang('global:delete'), array('class'=>'confirm btn btn-small btn-danger')) ?>
+							<?php echo anchor('admin/comments/report/'.$comment->id, 'Report', array('class'=>'btn btn-small')) ?>
+						</div>
 					</td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>
+
 	</table>
+
+	<?php $this->load->view('admin/partials/pagination') ?>
 	
 <?php else: ?>
 
-	<div class="no_data"><?php echo lang('comments:no_comments') ?></div>
+	<div class="alert margin"><?php echo lang('comments:no_comments') ?></div>
 
 <?php endif ?>

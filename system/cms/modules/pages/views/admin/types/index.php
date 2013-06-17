@@ -37,7 +37,7 @@
 				</table>
 				
 				<?php else:?>
-					<div class="no_data"><?php echo lang('page_types:no_pages');?></div>
+					<div class="alert margin"><?php echo lang('page_types:no_pages');?></div>
 				<?php endif; ?>		
 				
 			<?php echo form_close(); ?>

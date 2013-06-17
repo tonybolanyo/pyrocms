@@ -39,7 +39,7 @@
 	<section class="center">
 
 			<?php if ( ! $folders) : ?>
-				<div class="no_data"><?php echo lang('files:no_folders') ?></div>
+				<div class="alert margin"><?php echo lang('files:no_folders') ?></div>
 			<?php endif ?>
 
 			<ul class="folders-center pane"></ul>

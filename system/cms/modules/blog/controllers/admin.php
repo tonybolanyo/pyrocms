@@ -262,11 +262,10 @@ class Admin extends Admin_Controller
 
 		$this->template
 			->title($this->module_details['name'], lang('blog:create_title'))
-			->append_metadata($this->load->view('fragments/wysiwyg', array(), true))
-			->append_js('plugins/tagsinput.js')
-			->append_js('module::blog_form.js')
-			->append_js('module::blog_category_form.js')
-			->append_css('plugins/tagsinput.css')
+			//->append_metadata($this->load->view('fragments/wysiwyg', array(), true))
+			//->append_js('plugins/tagsinput.js')
+			//->append_js('module::blog_form.js')
+			//->append_js('module::blog_category_form.js')
 			->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
 			->set('post', $post)
 			->build('admin/form');
