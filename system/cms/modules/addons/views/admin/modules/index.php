@@ -38,7 +38,7 @@
 							<div class="pull-right">
 								<?php if ($module['installed']): ?>
 									<?php if ($module['enabled']): ?>
-										<?php echo anchor('admin/addons/modules/disable/'.$module['slug'], lang('global:disable'), array('class'=>'confirm btn btn-small btn-danger', 'title'=>lang('addons:modules:confirm_disable'))) ?>
+										<?php echo anchor('admin/addons/modules/disable/'.$module['slug'], lang('global:disable'), array('class'=>'confirm btn btn-small btn-warning', 'title'=>lang('addons:modules:confirm_disable'))) ?>
 									<?php else: ?>
 										<?php echo anchor('admin/addons/modules/enable/'.$module['slug'], lang('global:enable'), array('class'=>'confirm btn btn-small btn-success', 'title'=>lang('addons:modules:confirm_enable'))) ?>
 									<?php endif ?>
