@@ -19,7 +19,7 @@ class Migration_Add_data_views extends CI_Migration
 					'unsigned' => TRUE,
 					'auto_increment' => TRUE
 					),
-				'title' => array(
+				'name' => array(
 					'type' => 'VARCHAR',
 					'constraint' => 60,
 					),

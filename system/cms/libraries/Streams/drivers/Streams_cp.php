@@ -1120,7 +1120,7 @@ class Streams_cp extends CI_Driver {
 	/**
 	 * Form Editor
 	 *
-	 * Edit the tabs in a given form
+	 * Edit the tabs and fields in a given form
  	 *
 	 * @param	string - the stream slug
 	 * @param	string - the stream namespace slug
@@ -1164,88 +1164,9 @@ class Streams_cp extends CI_Driver {
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Views Table
+	 * View Editor
 	 *
-	 * Easily create a table of views in a certain namespace
-	 *
-	 * @param	string - the stream slug
-	 * @param	string - the stream namespace slug
-	 * @param	[mixed - pagination, either null for no pagination or a number for per page]
-	 * @param	[null - pagination uri without offset]
-	 * @param	[bool - setting this to true will take care of the $this->template business
-	 * @param	[array - extra params (see below)]
-	 *
-	 * Extra parameters to pass in $extra array:
-	 *
-	 * title	- Title of the page header (if using view override)
-	 *			$extra['title'] = 'Streams Sample';
-	 * 
-	 * buttons	- an array of buttons (if using view override)
-	 *			$extra['buttons'] = array(
-	 *				'label' 	=> 'Delete',
-	 *				'url'		=> 'admin/streams_sample/delete/-entry_id-',
-	 *				'confirm'	= true
-	 *			);
-	 *
-	 * see docs for more explanation
-	 */
-	public function views_table($stream_slug, $namespace, $view_override = false, $extra = array())
-	{
-		$CI = get_instance();
-		$data['buttons'] = (isset($extra['buttons']) and is_array($extra['buttons'])) ? $extra['buttons'] : array();
-
-		// Get stream
-		$data['stream'] = $this->stream_obj($stream_slug, $namespace);
-		if ( ! $data['stream']) $this->log_error('invalid_stream', 'stream_fields_table');
-
-		// -------------------------------------
-		// Get views
-		// -------------------------------------
-
-		$data['views'] = $CI->db->select()->where('stream_id', $data['stream']->id)->order_by('title', 'ASC')->get('data_views')->result();
-
-		// -------------------------------------
-		// Get number of fields total
-		// -------------------------------------
-		
-		$data['total_existing_views'] = $CI->db->select('id')->where('stream_id', $data['stream']->id)->from('data_views')->count_all_results();
-
-		// -------------------------------------
-		// Build Pages
-		// -------------------------------------
-
-		// Set title
-		if (isset($extra['title']))
-		{
-			$CI->template->title($extra['title']);
-		}
-
-		// Set no stream_fields message
-		if (isset($extra['no_views_message']))
-		{
-			$data['no_views_message'] = $extra['no_views_message'];
-		}
-
-		$table = $CI->load->view('admin/partials/streams/views', $data, true);
-		
-		if ($view_override)
-		{
-			// Hooray, we are building the template ourself.
-			$CI->template->build('admin/partials/blank_section', array('content' => $table, 'data' => $data));
-		}
-		else
-		{
-			// Otherwise, we are returning the table
-			return $table;
-		}
-	}
-
-	// --------------------------------------------------------------------------
-
-	/**
-	 * Custom View Form
-	 *
-	 * Creates a custom view form.
+	 * Edit a view or create a new one
 	 *
 	 * This allows you to easily create a form that users can
 	 * use to add new views to a stream.
@@ -1269,7 +1190,7 @@ class Streams_cp extends CI_Driver {
 	 *
 	 * see docs for more.
 	 */
-	public function view_form($stream_slug, $namespace_slug, $method = 'new', $return, $view_id = null, $view_override = false, $extra = array())
+	public function view_editor($stream_slug, $namespace_slug, $method = 'new', $return, $view_id = null, $view_override = false, $extra = array())
 	{
 		$CI = get_instance();
 		$data = array();

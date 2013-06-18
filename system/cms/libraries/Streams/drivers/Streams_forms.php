@@ -61,7 +61,7 @@ class Streams_forms extends CI_Driver {
 
 
 		// If we have tabs to install - let's do that too!
-		if (isset($form['tabs']))
+		if (isset($form['tabs']) and is_array($form['tabs']))
 		{
 			// Install each one
 			foreach ($form['tabs'] as $tab)
