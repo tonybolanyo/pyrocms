@@ -50,7 +50,7 @@ class Streams_views extends CI_Driver {
 			'data_views',
 			array(
 				'stream_id' => $stream->id,
-				'title' => $view['title'],
+				'name' => $view['name'],
 				'slug' => $view['slug'],
 				)
 			);
@@ -99,7 +99,7 @@ class Streams_views extends CI_Driver {
 
 
 		// Get our views
-		$views = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('is_locked', 'DESC')->order_by('title', 'ASC')->get('data_views')->result();
+		$views = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('is_locked', 'DESC')->order_by('name', 'ASC')->get('data_views')->result();
 
 
 		// Get our view stream_fields as well

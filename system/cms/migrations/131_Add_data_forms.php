@@ -23,10 +23,6 @@ class Migration_Add_data_forms extends CI_Migration
 					'type' => 'INT',
 					'constraint' => 11,
 					),
-				'title' => array(
-					'type' => 'VARCHAR',
-					'constraint' => 60,
-					),
 				'slug' => array(
 					'type' => 'VARCHAR',
 					'constraint' => 60,

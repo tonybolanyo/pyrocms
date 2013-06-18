@@ -50,7 +50,6 @@ class Streams_forms extends CI_Driver {
 			'data_forms',
 			array(
 				'stream_id' => $stream->id,
-				'title' => $form['title'],
 				'slug' => $form['slug'],
 				)
 			);
@@ -110,7 +109,7 @@ class Streams_forms extends CI_Driver {
 				'sort_order' => $tab['sort_order'],
 				'stream_id' => $stream->id,
 				'form_id' => $form->id,
-				'title' => $tab['title'],
+				'name' => $tab['name'],
 				)
 			);
 
@@ -208,9 +207,9 @@ class Streams_forms extends CI_Driver {
 
 			// Build er on top
 			$tabs[] = array(
-				'title' => $form_tab->title,
+				'name' => $form_tab->name,
 				'id' => $form_tab->id,
-				'slug' => slugify($form_tab->title).'-tab',
+				'slug' => slugify($form_tab->name).'-tab',
 				'fields' => $tab_fields,
 				);
 		}

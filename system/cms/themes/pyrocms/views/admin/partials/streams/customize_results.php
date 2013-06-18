@@ -1,8 +1,26 @@
 <!-- Controls -->
 <div class="row-fluid">
-<div class="span12 text-right">
+	<div class="span6">
 
-		<section class="btn-group text-right">
+		<strong>Order by: </strong>
+
+		<select name="order-<?php echo $stream->stream_slug; ?>" class="no-margin">
+			<?php foreach ($stream_fields as $slug => $stream_field): ?>
+			<option <?php echo ($this->input->get('order-'.$stream->stream_slug) == $slug ? 'selected="selected"' : null); ?> value="<?php echo $slug; ?>"><?php echo lang_label($stream_field->field_name); ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<select name="sort-<?php echo $stream->stream_slug; ?>" class="no-margin">
+			<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="ASC">ASC</option>
+			<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="DESC">DESC</option>
+		</select>
+
+	</div>
+
+
+	<div class="span6">
+
+		<section class="btn-group pull-right">
 			
 			<!-- Open our customization modal -->
 			<a href="#customize-<?php echo $stream->stream_slug; ?>-results" data-toggle="modal" class="btn btn-small">
@@ -11,7 +29,7 @@
 
 		</section>
 
-</div>
+	</div>
 </div>
 <!-- /Controls -->
 
@@ -46,11 +64,6 @@
 			<!-- As you add columns - reorder them as you wish -->
 			<li>
 				<a href="#<?php echo $stream->stream_slug; ?>-column-order" data-toggle="tab">Column Order</a>
-			</li>
-
-			<!-- How do we want to sort all this? -->
-			<li>
-				<a href="#sort-<?php echo $stream->stream_slug; ?>-by" data-toggle="tab">Sort by</a>
 			</li>
 
 		</ul>
@@ -93,23 +106,6 @@
 					<?php endif; ?>
 					
 				</ul>
-
-			</div>
-
-
-			<!-- Sort by... -->
-			<div class="tab-pane" id="sort-<?php echo $stream->stream_slug; ?>-by">
-
-				<select name="order-<?php echo $stream->stream_slug; ?>" class="skip no-margin">
-					<?php foreach ($stream_fields as $slug => $stream_field): ?>
-					<option <?php echo ($this->input->get('order-'.$stream->stream_slug) == $slug ? 'selected="selected"' : null); ?> value="<?php echo $slug; ?>"><?php echo lang_label($stream_field->field_name); ?></option>
-					<?php endforeach; ?>
-				</select>
-
-				<select name="sort-<?php echo $stream->stream_slug; ?>" class="skip no-margin">
-					<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="ASC">ASC</option>
-					<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="DESC">DESC</option>
-				</select>
 
 			</div>
 

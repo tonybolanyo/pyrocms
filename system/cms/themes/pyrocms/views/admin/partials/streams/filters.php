@@ -68,7 +68,7 @@
 						<?php $url_variables = $this->input->get(); ?>
 						<?php foreach ($url_variables as $filter => $value): ?>
 
-							<?php if (substr($filter, 0, 2) != 'f-' or strlen($value) == 0) continue; ?>
+							<?php if (substr($filter, 0, 2) != 'f-') continue; ?>
 							
 							<?php $filter = substr($filter, 2); ?>
 							<?php if (current(explode('-', $filter)) != $stream->stream_slug) continue; ?>
