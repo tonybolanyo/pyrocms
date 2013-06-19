@@ -1164,7 +1164,7 @@ class Streams_cp extends CI_Driver {
 	// --------------------------------------------------------------------------
 
 	/**
-	 * View Editor
+	 * View Form
 	 *
 	 * Edit a view or create a new one
 	 *
@@ -1190,7 +1190,7 @@ class Streams_cp extends CI_Driver {
 	 *
 	 * see docs for more.
 	 */
-	public function view_editor($stream_slug, $namespace_slug, $method = 'new', $return, $view_id = null, $view_override = false, $extra = array())
+	public function view_form($stream_slug, $namespace_slug, $method = 'new', $return, $view_id = null, $view_override = false, $extra = array())
 	{
 		$CI = get_instance();
 		$data = array();
@@ -1311,7 +1311,7 @@ class Streams_cp extends CI_Driver {
 		// Build out our view
 		// -------------------------------------
 
-		$this->CI->template->append_js('streams/view_editor.js');
+		$this->CI->template->append_js('streams/view_form.js');
 
 		$form = $CI->load->view('admin/partials/streams/view_form', $data, true);
 		

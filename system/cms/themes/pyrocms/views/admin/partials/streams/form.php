@@ -25,7 +25,7 @@
 
 <?php if ($mode == 'edit'){ ?><input type="hidden" value="<?php echo $entry->id;?>" name="row_edit_id" /><?php } ?>
 
-<div class="btn-group padded">
+<div class="btn-group padded no-padding-bottom">
 	<button type="submit" name="btnAction" value="save" class="btn"><span><?php echo lang('buttons:save'); ?></span></button>	
 	<a href="<?php echo site_url(isset($return) ? $return : 'admin/streams/entries/index/'.$stream->id); ?>" class="btn"><?php echo lang('buttons:cancel'); ?></a>
 </div>
@@ -34,7 +34,7 @@
 
 <?php else: ?>
 
-<div class="no_data">
+<div class="alert margin">
 	<?php
 		
 		if (isset($no_fields_message) and $no_fields_message)

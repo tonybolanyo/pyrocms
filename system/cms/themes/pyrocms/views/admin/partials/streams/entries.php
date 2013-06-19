@@ -20,9 +20,9 @@
     <table class="table streams-<?php echo $stream->stream_slug; ?>-entries-table">
 		<thead>
 			<tr>
-				<?php if ($this->input->get($stream->stream_slug.'-columns')): ?>
+				<?php if (isset($_GET[$stream->stream_slug.'-column'])): ?>
 
-					<?php foreach( explode('|', $this->input->get($stream->stream_slug.'-columns')) as $column ): ?>
+					<?php foreach($_GET[$stream->stream_slug.'-column'] as $column ): ?>
 					<th><?php echo lang_label($stream_fields->$column->field_name); ?></th>
 					<?php endforeach; ?>
 
@@ -39,9 +39,9 @@
 
 			<tr>
 
-				<?php if ($this->input->get($stream->stream_slug.'-columns')): ?>
+				<?php if (isset($_GET[$stream->stream_slug.'-column'])): ?>
 
-					<?php foreach( explode('|', $this->input->get($stream->stream_slug.'-columns')) as $column ): ?>
+					<?php foreach($_GET[$stream->stream_slug.'-column'] as $column ): ?>
 					<td class="streams-<?php echo $column; ?>-column">
 					<?php
 					

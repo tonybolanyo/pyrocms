@@ -1,35 +1,17 @@
 <!-- Controls -->
 <div class="row-fluid">
-	<div class="span6">
+<div class="span12">
 
-		<strong>Order by: </strong>
+	<section class="btn-group pull-right">
+		
+		<!-- Open our customization modal -->
+		<a href="#customize-<?php echo $stream->stream_slug; ?>-results" data-toggle="modal" class="btn btn-small">
+			Customize Results <i class="icon-cogs"></i>
+		</a>
 
-		<select name="order-<?php echo $stream->stream_slug; ?>" class="no-margin">
-			<?php foreach ($stream_fields as $slug => $stream_field): ?>
-			<option <?php echo ($this->input->get('order-'.$stream->stream_slug) == $slug ? 'selected="selected"' : null); ?> value="<?php echo $slug; ?>"><?php echo lang_label($stream_field->field_name); ?></option>
-			<?php endforeach; ?>
-		</select>
+	</section>
 
-		<select name="sort-<?php echo $stream->stream_slug; ?>" class="no-margin">
-			<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="ASC">ASC</option>
-			<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="DESC">DESC</option>
-		</select>
-
-	</div>
-
-
-	<div class="span6">
-
-		<section class="btn-group pull-right">
-			
-			<!-- Open our customization modal -->
-			<a href="#customize-<?php echo $stream->stream_slug; ?>-results" data-toggle="modal" class="btn btn-small">
-				Customize Results <i class="icon-cogs"></i>
-			</a>
-
-		</section>
-
-	</div>
+</div>
 </div>
 <!-- /Controls -->
 
@@ -50,71 +32,90 @@
 
 	
 	<!-- Body Content -->
-	<div class="modal-body no-padding">
+	<div class="modal-body padded" data-stream="<?php echo $stream->stream_slug; ?>">
 
 
-		<!-- Tabs -->
-		<ul class="nav nav-tabs padded no-padding-bottom grayLightest-bg">
+		<!-- Choose Columns -->
+		<div class="content-wrapper">
 
-			<!-- Choose what columns, from all of them, that you want to see -->
-			<li class="active">
-				<a href="#choose-<?php echo $stream->stream_slug; ?>-columns" data-toggle="tab">Choose Columns</a>
-			</li>
-
-			<!-- As you add columns - reorder them as you wish -->
-			<li>
-				<a href="#<?php echo $stream->stream_slug; ?>-column-order" data-toggle="tab">Column Order</a>
-			</li>
-
-		</ul>
-		<!-- /Tabs -->
+			<h4 class="no-margin padding-bottom">Choose Columns</h4>
 
 
+			<?php foreach ($stream_fields as $slug=>$stream_field): ?>
+			<label>
+				<input type="checkbox" <?php echo (isset($_GET[$stream->stream_slug.'-column']) and in_array($slug, $_GET[$stream->stream_slug.'-column'])) ? 'checked="checked"' : null; ?> data-column="<?php echo $slug; ?>">
+				<?php echo lang_label($stream_field->field_name); ?>
+			</label>
+			<?php endforeach; ?>
 
-		<!-- Tab Content (for above tabs) -->
-		<div class="tab-content padded no-padding-top">
-			
-			
-			<!-- Choose what columns to diplay -->
-			<div class="tab-pane active choose-stream-columns" id="choose-<?php echo $stream->stream_slug; ?>-columns">
+		</div>
+		<!-- /Choose Columns -->
 
-				<!-- The Value -->
-				<input type="hidden" class="stream-columns-input" name="<?php echo $stream->stream_slug; ?>-columns" value="<?php echo $this->input->get($stream->stream_slug.'-columns'); ?>"/>
 
-				<?php foreach ($stream_fields as $slug=>$stream_field): ?>
-				<label>
-					<input type="checkbox" class="show-column" <?php echo (in_array($slug, explode('|', $this->input->get($stream->stream_slug.'-columns')))) ? 'checked="checked"' : null; ?> data-column="<?php echo $slug; ?>">
-					<?php echo lang_label($stream_field->field_name); ?>
-				</label>
-				<?php endforeach; ?>
-			</div>
+		<hr/>
+
+
+		<!-- Column Order -->
+		<div class="content-wrapper">
+
+			<h4 class="no-margin padding-bottom">Column Order</h4>
 
 
 			<!-- Define their ordering -->
-			<div class="tab-pane dd column-order" id="<?php echo $stream->stream_slug; ?>-column-order">
+			<div class="well dd column-order">
 
 				<ul class="dd-list">
 					
-					<?php if ($this->input->get($stream->stream_slug.'-columns')): ?>
-					<?php foreach (explode('|', $this->input->get($stream->stream_slug.'-columns')) as $column): ?>
+					<?php if (isset($_GET[$stream->stream_slug.'-column'])): ?>
+					<?php foreach ($columns = $_GET[$stream->stream_slug.'-column'] as $column): ?>
 					<li class="dd-item" data-column="<?php echo $column; ?>">
 						<div class="dd-handle">
 							<?php echo lang_label($stream_fields->$column->field_name); ?>
 						</div>
+						<input type="hidden" name="<?php echo $stream->stream_slug; ?>-column[]" value="<?php echo $column; ?>"/>
 					</li>
 					<?php endforeach; ?>
 					<?php endif; ?>
+
+					<li class="dd-item empty" style="<?php if ($this->input->get($stream->stream_slug.'-column')) echo 'display: none;' ?>">
+						Please choose some columns first.
+					</li>
 					
 				</ul>
 
 			</div>
 
+		</div>
+		<!-- /Column Order -->
+
+
+		<hr/>
+
+
+		<!-- Order By -->
+		<div class="content-wrapper">
+
+			<h4 class="no-margin padding-bottom">Order By</h4>
+
+
+			<!-- Order By Options -->
+			<select name="order-<?php echo $stream->stream_slug; ?>" class="no-margin">
+				<?php foreach ($stream_fields as $slug => $stream_field): ?>
+				<option <?php echo ($this->input->get('order-'.$stream->stream_slug) == $slug ? 'selected="selected"' : null); ?> value="<?php echo $slug; ?>"><?php echo lang_label($stream_field->field_name); ?></option>
+				<?php endforeach; ?>
+			</select>
+
+			<select name="sort-<?php echo $stream->stream_slug; ?>" class="no-margin">
+				<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="ASC">ASC</option>
+				<option <?php echo ($this->input->get('sort-'.$stream->stream_slug) ? 'selected="selected"' : null); ?> value="DESC">DESC</option>
+			</select>
 
 		</div>
-		<!-- /Tab Content -->
+		<!-- /Order By -->
+
 
 	</div>
-	<!-- Body Content -->
+	<!-- /Body Content -->
 	
 
 	<!-- Modal Footer -->
