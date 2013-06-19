@@ -2,7 +2,7 @@
 	$(function(){
 
 		// When adding / removing a column from the view
-		$('input[type^="checkbox"]').on('change', function(){
+		$('input.show-column').on('change', function(){
 
 			// Get started
 			var columns = new Array();

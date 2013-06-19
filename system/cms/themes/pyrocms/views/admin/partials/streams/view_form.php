@@ -23,20 +23,12 @@
 		<h4 class="no-margin padding-bottom">Choose Columns</h4>
 
 
-		<!-- The Value -->
-		<input type="hidden" class="stream-columns-input" name="<?php echo $stream->stream_slug; ?>-columns" value="<?php echo $this->input->get($stream->stream_slug.'-columns'); ?>"/>
-
-
-		<div class="choose-stream-columns">
-
-			<?php foreach ($stream_fields as $slug=>$stream_field): ?>
-			<label>
-				<input type="checkbox" <?php echo (in_array($slug, explode('|', $this->input->get($stream->stream_slug.'-columns')))) ? 'checked="checked"' : null; ?> data-column="<?php echo $slug; ?>">
-				<?php echo lang_label($stream_field->field_name); ?>
-			</label>
-			<?php endforeach; ?>
-
-		</div>
+		<?php foreach ($stream_fields as $slug=>$stream_field): ?>
+		<label>
+			<input type="checkbox" class="show-column" <?php echo (isset($_GET[$stream->stream_slug.'-column']) and in_array($slug, $_GET[$stream->stream_slug.'-column'])) ? 'checked="checked"' : null; ?> data-column="<?php echo $slug; ?>">
+			<?php echo lang_label($stream_field->field_name); ?>
+		</label>
+		<?php endforeach; ?>
 
 	</fieldset>
 	<!-- /Choose Columns -->
@@ -56,18 +48,18 @@
 
 			<ul class="dd-list">
 				
-				<?php if ($this->input->get($stream->stream_slug.'-columns')): ?>
-				<?php foreach (explode('|', $this->input->get($stream->stream_slug.'-columns')) as $column): ?>
+				<?php if (isset($_GET[$stream->stream_slug.'-column'])): ?>
+				<?php foreach ($columns = $_GET[$stream->stream_slug.'-column'] as $column): ?>
 				<li class="dd-item" data-column="<?php echo $column; ?>">
 					<div class="dd-handle">
 						<?php echo lang_label($stream_fields->$column->field_name); ?>
-						<?php input_hidden('show-columns[]', $column->assign_id); ?>
 					</div>
+					<input type="hidden" name="<?php echo $stream->stream_slug; ?>-column[]" value="<?php echo $column; ?>"/>
 				</li>
 				<?php endforeach; ?>
 				<?php endif; ?>
 
-				<li class="dd-item empty" style="<?php if ($this->input->get($stream->stream_slug.'-columns')) echo 'display: none;' ?>">
+				<li class="dd-item empty" style="<?php if ($this->input->get($stream->stream_slug.'-column')) echo 'display: none;' ?>">
 					Please choose some columns first.
 				</li>
 				
@@ -112,12 +104,7 @@
 
 		<h4 class="no-margin padding-bottom">Search Fields</h4>
 	
-		<?php foreach ($stream_fields as $slug=>$stream_field): ?>
-		<label>
-			<input type="checkbox" name="search-field[]" value="<?php echo $stream_field->assign_id; ?>">
-			<?php echo lang_label($stream_field->field_name); ?>
-		</label>
-		<?php endforeach; ?>
+		<?php echo form_multiselect('search-columns', $stream_fields_dropdown, array()); ?>
 
 	</fieldset>
 	<!-- /Search Fields -->

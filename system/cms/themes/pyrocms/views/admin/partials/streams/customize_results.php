@@ -43,7 +43,7 @@
 
 			<?php foreach ($stream_fields as $slug=>$stream_field): ?>
 			<label>
-				<input type="checkbox" <?php echo (isset($_GET[$stream->stream_slug.'-column']) and in_array($slug, $_GET[$stream->stream_slug.'-column'])) ? 'checked="checked"' : null; ?> data-column="<?php echo $slug; ?>">
+				<input type="checkbox" class="show-column" <?php echo (isset($_GET[$stream->stream_slug.'-column']) and in_array($slug, $_GET[$stream->stream_slug.'-column'])) ? 'checked="checked"' : null; ?> data-column="<?php echo $slug; ?>">
 				<?php echo lang_label($stream_field->field_name); ?>
 			</label>
 			<?php endforeach; ?>
