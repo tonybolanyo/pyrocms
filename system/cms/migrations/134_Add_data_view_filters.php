@@ -1,16 +1,16 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Migration 130: Add data_tab_assignments
+ * Migration 134: Add data_view_filters
  * 
  * Added June 17th, 2013
  */
-class Migration_Add_data_tab_assignments extends CI_Migration
+class Migration_Add_data_view_filters extends CI_Migration
 {
   public function up()
 	{
 		// Add meta robots index
-		if ( ! $this->db->table_exists('data_tab_assignments'))
+		if ( ! $this->db->table_exists('data_view_filters'))
 		{
 			$fields = array(
 				'id' => array(
@@ -23,11 +23,7 @@ class Migration_Add_data_tab_assignments extends CI_Migration
 					'type' => 'INT',
 					'constraint' => 11,
 					),
-				'form_id' => array(
-					'type' => 'INT',
-					'constraint' => 11,
-					),
-				'tab_id' => array(
+				'view_id' => array(
 					'type' => 'INT',
 					'constraint' => 11,
 					),
@@ -35,13 +31,21 @@ class Migration_Add_data_tab_assignments extends CI_Migration
 					'type' => 'INT',
 					'constraint' => 11,
 					),
+				'condition' => array(
+					'type' => 'VARCHAR',
+					'constraint' => 30,
+					),
+				'default_value' => array(
+					'type' => 'TEXT',
+					'null' => true,
+					),
 				);
 
 			$this->dbforge->add_field($fields);
 
 			$this->dbforge->add_key('id', TRUE);
 
-			$this->dbforge->create_table('data_tab_assignments');
+			$this->dbforge->create_table('data_view_filters');
 		}
 	}
 	

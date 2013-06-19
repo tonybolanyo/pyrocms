@@ -1210,17 +1210,6 @@ class Streams_cp extends CI_Driver {
 
 		foreach ($stream_fields as $stream_field) $stream_fields_dropdown[$stream_field->assign_id] = lang_label($stream_field->field_name);
 
-		// Get the assign id of the title column
-		$title_column_assign_id = 0;
-
-		foreach ($stream_fields as $stream_field)
-		{
-			if ($stream_field->field_slug == $stream->title_column)
-			{
-				$title_column_assign_id = $stream_field->assign_id;
-			}
-		}
-
 		// -------------------------------------
 		// Get the field if we have the view
 		// -------------------------------------
@@ -1238,7 +1227,7 @@ class Streams_cp extends CI_Driver {
 		{
 			$view->is_locked = 'no';
 			$view->title = null;
-			$view->order_by = $title_column_assign_id;
+			$view->order_by = isset($stream_fields->{$stream->title_column}) ? $stream_fields->{$stream->title_column}->assign_id : null;
 			$view->sort = 'ASC';
 			$view->limit = 25;
 		}
@@ -1260,15 +1249,20 @@ class Streams_cp extends CI_Driver {
 		{
 			$post_data = $CI->input->post();
 
-			// Make sure we have a title - it's the only thing they could mess up!
-			if (! isset($entry['title']) or empty($entry['title'])) $entry['title'] = 'Untitled view';
+			print_r($post_data);die;
 
-			// Add the stream_id
-			$entry['stream_id'] = $stream->id;
+			// Make sure we have a name - it's the only thing they could mess up really..
+			if (! isset($post_data['name']) or empty($post_data['name'])) $post_data['name'] = 'Untitled view';
 
-			// Remove the btnAction
-			unset($entry['btnAction']);
+			
+			// Build our view to update or insert
+			$entry = array(
+				'name' => $post_data['name'],
+				'is_locked' => 'no',
+				'stream_id' => $stream->id,
+				);
 
+			
 			if ($method == 'new')
 			{
 				// Save

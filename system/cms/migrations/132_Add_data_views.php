@@ -26,6 +26,7 @@ class Migration_Add_data_views extends CI_Migration
 				'is_locked' => array(
 					'type' => 'ENUM',
 					'constraint' => array('yes', 'no'),
+					'default' => 'no',
 					),
 				'stream_id' => array(
 					'type' => 'INT',
@@ -38,10 +39,16 @@ class Migration_Add_data_views extends CI_Migration
 				'sort' => array(
 					'type' => 'ENUM',
 					'constraint' => array('ASC', 'DESC'),
+					'default' => 'ASC',
 					),
 				'limit' => array(
 					'type' => 'INT',
 					'constraint' => 3,
+					),
+				'search' => array(
+					'type' => 'VARCHAR',
+					'constraint' => 255,
+					'default' => NULL,
 					),
 				);
 

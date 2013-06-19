@@ -1,4 +1,4 @@
-<div class="hidden advanced-filters-data advanced-<?php echo $stream->stream_slug; ?>-filters-data">
+<div class="hidden advanced-filters-data">
 
 
 	<!-- Blank Row (for adding) -->
@@ -43,7 +43,7 @@
 	<section class="streams-<?php echo $slug; ?>-filter-data">
 
 		<div class="conditions">
-			<?php echo form_dropdown($stream->stream_slug.'-'.$slug.'-f-condition', $stream_field->filter_output['conditions'], null, 'class="skip no-margin"'); ?>
+			<?php echo form_dropdown($stream->stream_slug.'-f-condition', $stream_field->filter_output['conditions'], null, 'class="skip no-margin"'); ?>
 		</div>
 
 		<div class="input">

@@ -19,10 +19,6 @@ class Migration_Add_data_tabs extends CI_Migration
 					'unsigned' => TRUE,
 					'auto_increment' => TRUE
 					),
-				'sort_order' => array(
-					'type' => 'INT',
-					'constraint' => 11,
-					),
 				'stream_id' => array(
 					'type' => 'INT',
 					'constraint' => 11,
