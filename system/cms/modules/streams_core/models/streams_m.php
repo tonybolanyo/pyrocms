@@ -445,6 +445,17 @@ class Streams_m extends MY_Model {
 		if ( ! $this->db->delete(ASSIGN_TABLE)) return false;
 
 		// -------------------------------------
+		// Delete forms / views / tabs / etc
+		// -------------------------------------
+		
+		$this->db->delete('data_forms', array('stream_id' => $stream->id));
+		$this->db->delete('data_tabs', array('stream_id' => $stream->id));
+		$this->db->delete('data_tab_assignments', array('stream_id' => $stream->id));
+		$this->db->delete('data_views', array('stream_id' => $stream->id));
+		$this->db->delete('data_view_assignments', array('stream_id' => $stream->id));
+		$this->db->delete('data_view_filters', array('stream_id' => $stream->id));
+
+		// -------------------------------------
 		// Clear the runtime cache
 		// -------------------------------------
 

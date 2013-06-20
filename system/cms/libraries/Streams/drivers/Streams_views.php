@@ -29,9 +29,26 @@ class Streams_views extends CI_Driver {
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Insert Form
+	 * Insert multiple Views
+ 	 *
+	 * @param	string - the stream slug
+	 * @param	string - the stream namespace slug
+	 * @param	array - the views array
+	 * @return	mixed - bool or array
 	 *
-	 * Insert a view
+	 */
+	public function insert_views($views)
+	{
+		foreach ($views as $view)
+		{
+			$this->insert_view($view);
+		}
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Insert a View
  	 *
 	 * @param	string - the stream slug
 	 * @param	string - the stream namespace slug
@@ -39,34 +56,85 @@ class Streams_views extends CI_Driver {
 	 * @return	mixed - bool or array
 	 *
 	 */
-	public function insert_view($stream_slug, $namespace_slug, $view)
+	public function insert_view($view)
 	{
 		// We always need our stream		
-		if (! ($stream = $this->stream_obj($stream_slug, $namespace_slug))) $this->log_error('invalid_stream', 'view');
+		if (! ($stream = $this->stream_obj($view['stream'], $view['namespace']))) $this->log_error('invalid_stream', 'view');
 
+
+		// Get stream_fields
+		$stream_fields = $this->CI->streams_m->get_stream_fields($stream->id);
+
+
+		// Prep search
+		if (isset($view['search']))
+		{
+			foreach ($view['search'] as &$search)
+			{
+				$search = $stream_fields->{$search}->assign_id;
+			}
+		}
+		else
+		{
+			$view['search'] = array();
+		}
+		
 
 		// Insert that betch
 		$this->CI->db->insert(
 			'data_views',
 			array(
-				'stream_id' => $stream->id,
 				'name' => $view['name'],
-				'slug' => $view['slug'],
+				'is_locked' => isset($view['is_locked']) ? ($view['is_locked'] === true ? 'yes' : 'no') : 'no',
+				'stream_id' => $stream->id,
+				'order_by' => $stream_fields->{$view['order_by']}->assign_id,
+				'sort' => $view['sort'],
+				'search' => implode('|', $view['search']),
 				)
 			);
 
 		// Save der ID
-		$id = $this->CI->db->insert_id();
+		$view_id = $this->CI->db->insert_id();
 
 
 
-		// If we have tabs to install - let's do that too!
-		if (isset($view['tabs']))
+		// If we have view_assignments..
+		if (isset($view['view_assignments']))
 		{
 			// Install each one
-			foreach ($view['tabs'] as $tab)
+			foreach ($view['view_assignments'] as $k => $view_assignment)
 			{
-				$this->insert_tab($stream_slug, $namespace_slug, $view['slug'], $tab);
+				$this->CI->db->insert(
+					'data_view_assignments',
+					array(
+						'sort_order' => $k,
+						'stream_id' => $stream->id,
+						'view_id' => $view_id,
+						'assign_id' => $stream_fields->{$view_assignment}->assign_id,
+						)
+					);
+			}
+		}
+
+
+
+		// If we have view_filters..
+		if (isset($view['view_filters']))
+		{
+			// Install each one
+			foreach ($view['view_filters'] as $k => $view_filter)
+			{
+				$this->CI->db->insert(
+					'data_view_filters',
+					array(
+						'sort_order' => $k,
+						'stream_id' => $stream->id,
+						'view_id' => $view_id,
+						'assign_id' => $stream_fields->{$view_filter['filter']}->assign_id,
+						'condition' => $view_filter['condition'],
+						'default_value' => $view_filter['default_value'],
+						)
+					);
 			}
 		}
 
