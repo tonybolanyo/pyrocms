@@ -28,7 +28,7 @@ class Migration_Add_data_view_filters extends CI_Migration
 					'constraint' => 11,
 					),
 				'assign_id' => array(
-					'type' => 'INT',
+					'type' => 'VARCHAR',	// yes - varchar allows for "created" or "created_by" as well
 					'constraint' => 11,
 					),
 				'condition' => array(

@@ -33,7 +33,7 @@ class Migration_Add_data_views extends CI_Migration
 					'constraint' => 11,
 					),
 				'order_by' => array(
-					'type' => 'INT',
+					'type' => 'VARCHAR',	// yes - varchar allows for "created" or "created_by" as well
 					'constraint' => 11,
 					),
 				'sort' => array(

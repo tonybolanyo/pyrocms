@@ -37,11 +37,11 @@ class Streams_views extends CI_Driver {
 	 * @return	mixed - bool or array
 	 *
 	 */
-	public function insert_views($views)
+	public function add_views($views)
 	{
 		foreach ($views as $view)
 		{
-			$this->insert_view($view);
+			$this->add_view($view);
 		}
 	}
 
@@ -56,7 +56,7 @@ class Streams_views extends CI_Driver {
 	 * @return	mixed - bool or array
 	 *
 	 */
-	public function insert_view($view)
+	public function add_view($view)
 	{
 		// We always need our stream		
 		if (! ($stream = $this->stream_obj($view['stream'], $view['namespace']))) $this->log_error('invalid_stream', 'view');
@@ -87,7 +87,7 @@ class Streams_views extends CI_Driver {
 				'name' => $view['name'],
 				'is_locked' => isset($view['is_locked']) ? ($view['is_locked'] === true ? 'yes' : 'no') : 'no',
 				'stream_id' => $stream->id,
-				'order_by' => $stream_fields->{$view['order_by']}->assign_id,
+				'order_by' => isset($stream_fields->{$view['order_by']}->assign_id) ? $stream_fields->{$view['order_by']}->assign_id : $view['order_by'],
 				'sort' => $view['sort'],
 				'search' => implode('|', $view['search']),
 				)
@@ -110,7 +110,7 @@ class Streams_views extends CI_Driver {
 						'sort_order' => $k,
 						'stream_id' => $stream->id,
 						'view_id' => $view_id,
-						'assign_id' => $stream_fields->{$view_assignment}->assign_id,
+						'assign_id' => isset($stream_fields->{$view_assignment}->assign_id) ? $stream_fields->{$view_assignment}->assign_id : $view_assignment,
 						)
 					);
 			}
@@ -130,7 +130,7 @@ class Streams_views extends CI_Driver {
 						'sort_order' => $k,
 						'stream_id' => $stream->id,
 						'view_id' => $view_id,
-						'assign_id' => $stream_fields->{$view_filter['filter']}->assign_id,
+						'assign_id' => isset($stream_fields->{$view_filter['filter']}->assign_id) ? $stream_fields->{$view_filter['filter']}->assign_id : $view_filter['filter'],
 						'condition' => $view_filter['condition'],
 						'default_value' => $view_filter['default_value'],
 						)
@@ -243,7 +243,7 @@ class Streams_views extends CI_Driver {
 
 
 			// Get slugs for advanced_filters filters
-			foreach ($view_filters as &$view_filter)
+			foreach ($view_filters as $view_filter)
 			{
 				// Only fot this view..
 				if ($view_filter->view_id != $view->id) continue;
