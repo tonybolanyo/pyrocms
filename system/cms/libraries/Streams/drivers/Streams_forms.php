@@ -109,6 +109,7 @@ class Streams_forms extends CI_Driver {
 				'sort_order' => $tab['sort_order'],
 				'stream_id' => $stream->id,
 				'form_id' => $form->id,
+				'title' => $tab['title'],
 				)
 			);
 
