@@ -674,6 +674,7 @@ class Streams_cp extends CI_Driver {
 									$post_data['field_slug'],
 									$post_data['field_type'],
 									$namespace,
+									$post_data['field_map'],
 									$post_data
 					))
 				{
