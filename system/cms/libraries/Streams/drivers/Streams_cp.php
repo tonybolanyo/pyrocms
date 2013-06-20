@@ -1098,7 +1098,7 @@ class Streams_cp extends CI_Driver {
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Form Editor
+	 * Edit Form
 	 *
 	 * Edit the tabs and fields in a given form
  	 *
@@ -1107,7 +1107,7 @@ class Streams_cp extends CI_Driver {
 	 * @param	string - the form slug
 	 * @return	mixed - void or string
 	 */
-	public function form_editor($stream_slug, $namespace_slug, $form_slug, $view_override = true)
+	public function edit_form($stream_slug, $namespace_slug, $form_slug, $view_override = true)
 	{
 		// These are.. available!
 		$available_stream_fields = array();
@@ -1127,7 +1127,7 @@ class Streams_cp extends CI_Driver {
 		// Build the form
 		$this->CI->template->append_js('streams/form_editor.js');
 
-		$tabs = $this->CI->load->view('admin/partials/streams/form_editor', array('form' => $form, 'tabs' => $tabs, 'stream_fields' => $stream_fields, 'stream' => $stream, 'available_stream_fields' => $available_stream_fields), true);
+		$tabs = $this->CI->load->view('admin/partials/streams/edit_form', array('form' => $form, 'tabs' => $tabs, 'stream_fields' => $stream_fields, 'stream' => $stream, 'available_stream_fields' => $available_stream_fields), true);
 
 		if ($view_override)
 		{
