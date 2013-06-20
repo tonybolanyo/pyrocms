@@ -41,10 +41,6 @@ class Migration_Add_data_views extends CI_Migration
 					'constraint' => array('ASC', 'DESC'),
 					'default' => 'ASC',
 					),
-				'limit' => array(
-					'type' => 'INT',
-					'constraint' => 3,
-					),
 				'search' => array(
 					'type' => 'VARCHAR',
 					'constraint' => 255,

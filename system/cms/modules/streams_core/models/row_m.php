@@ -240,38 +240,14 @@ class Row_m extends MY_Model {
 
 
 		// Now check for advanced filters
-		if ($this->input->get('filter-'.$stream->stream_slug))
+		if ($this->input->get('f-'.$stream->stream_slug.'-filter'))
 		{
 			// Get all URL variables
-			$url_variables = $this->input->get();
+			$query_string_variables = $this->input->get();
 
 			// Loop and process
-			foreach ($url_variables as $filter => $value)
+			foreach ($query_string_variables['f-'.$stream->stream_slug.'-filter'] as $k => $filter)
 			{
-				// -------------------------------------
-				// Filter Field
-				// -------------------------------------
-				// Filters all start with f-
-				// Like: f-$stream_slug-$field_slug
-				// First.. do some validation!
-				// -------------------------------------
-
-				// Filter API parameters only
-				if (substr($filter, 0, 2) != 'f-') continue;
-
-				// Remove identifier
-				$filter = substr($filter, 2);
-
-				// Stick to the stream in question
-				if (current(explode('-', $filter)) != $stream->stream_slug) continue;
-
-				// Isolate the field slug
-				$filter = end(explode('-', $filter));
-
-				// Neeeed a value son!
-				if (strlen($value) == 0 and $this->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'isempty' and $this->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'notempty') continue;
-
-
 				// -------------------------------------
 				// NICE! Now figure out the condition
 				// -------------------------------------
@@ -282,12 +258,16 @@ class Row_m extends MY_Model {
 				// startswith
 				// endswith
 				// isempty
-				// notempty
+				// isnotempty
+				// ........ To be continued
 				// -------------------------------------
 
-				$value = urldecode(str_replace($stream->stream_slug.'-', '', $value));
+				// We really need a value unless it's a couple of specific cases
+				if (empty($value) and ! in_array($query_string_variables['f-'.$stream->stream_slug.'-condition'][$k], array('isempty', 'isnotempty'))) continue;
 
-				switch ($this->input->get($stream->stream_slug.'-'.$filter.'-f-condition'))
+
+				// What are we doing?
+				switch ($query_string_variables['f-'.$stream->stream_slug.'-condition'][$k])
 				{
 
 					case 'is':
@@ -326,7 +306,7 @@ class Row_m extends MY_Model {
 						$filter_api[] = ' ('.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NULL OR '.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "") ';
 						break;
 
-					case 'notempty':
+					case 'isnotempty':
 						$filter_api[] = ' ('.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NOT NULL AND '.$this->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' != "") ';
 						break;
 					

@@ -56,6 +56,9 @@
 		// Listen for adding filter
 		$('.advanced-filters').on('click', 'a.add-advanced-filter', function(){
 
+			// Filter on!
+			$(this).closest('.advanced-filters').find('input.filtering-flag').attr('name', 'filter-' + $(this).closest('.advanced-filters').data('stream-slug'));
+			
 			// Clone an empty row
 			$(this).closest('.view-form').find('table.blank-row tr').clone().appendTo($(this).closest('table'));
 

@@ -172,43 +172,15 @@ class Streams_cp extends CI_Driver {
 		}
 
 
-		// Now check advanced filters
-		if ($CI->input->get('filter-'.$stream->stream_slug))
+		// Now check for advanced filters
+		if ($CI->input->get('f-'.$stream->stream_slug.'-filter'))
 		{
 			// Get all URL variables
-			$url_variables = $CI->input->get();
-
+			$query_string_variables = $CI->input->get();
 
 			// Loop and process
-			foreach ($url_variables as $filter => $value)
+			foreach ($query_string_variables['f-'.$stream->stream_slug.'-filter'] as $k => $filter)
 			{
-				// -------------------------------------
-				// Filter Field
-				// -------------------------------------
-				// Filters all start with f-
-				// Like: f-$stream_slug-$field_slug
-				// First.. do some validation!
-				// -------------------------------------
-
-				// Filter API parameters only
-				if (substr($filter, 0, 2) != 'f-') continue;
-
-				// Remove identifier
-				$filter = substr($filter, 2);
-
-				// Stick to the stream in question
-				if (current(explode('-', $filter)) != $stream->stream_slug) continue;
-
-				// Isolate the field slug
-				$filter = end(explode('-', $filter));
-
-				// Neeeed a value son!
-				if ($CI->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'isempty' and $CI->input->get($stream->stream_slug.'-'.$filter.'-f-condition') != 'notempty')
-				{
-					if (strlen($value) == 0) continue;
-				}
-
-
 				// -------------------------------------
 				// NICE! Now figure out the condition
 				// -------------------------------------
@@ -219,15 +191,23 @@ class Streams_cp extends CI_Driver {
 				// startswith
 				// endswith
 				// isempty
-				// notempty
+				// isnotempty
+				// ........ To be continued
 				// -------------------------------------
 
-				switch ($CI->input->get($stream->stream_slug.'-'.$filter.'-f-condition'))
+				$value = urldecode($query_string_variables['f-'.$stream->stream_slug.'-value'][$k]);
+
+				// We really need a value unless it's a couple of specific cases
+				if (empty($value) and ! in_array($query_string_variables['f-'.$stream->stream_slug.'-condition'][$k], array('isempty', 'isnotempty'))) continue;
+
+
+				// What are we doing?
+				switch ($query_string_variables['f-'.$stream->stream_slug.'-condition'][$k])
 				{
 
 					case 'is':
 
-						// Like another field?
+						// Referencing another field?
 						if (substr($value, 0, 2) == '${')
 						{
 							$where[] = $stream->stream_prefix.$stream->stream_slug.'.'.$filter.' = '.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.trim(substr($value, 2, -1)));
@@ -262,7 +242,7 @@ class Streams_cp extends CI_Driver {
 						$where[] = ' ('.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NULL OR '.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' = "") ';
 						break;
 
-					case 'notempty':
+					case 'isnotempty':
 						$where[] = ' ('.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' IS NOT NULL AND '.$CI->db->protect_identifiers($stream->stream_prefix.$stream->stream_slug.'.'.$filter).' != "") ';
 						break;
 					
@@ -1208,7 +1188,7 @@ class Streams_cp extends CI_Driver {
 		// Make stream_fields mesh with the dropdown method
 		$stream_fields_dropdown = array();
 
-		foreach ($stream_fields as $stream_field) $stream_fields_dropdown[$stream_field->assign_id] = lang_label($stream_field->field_name);
+		foreach ($stream_fields as $stream_field) $stream_fields_dropdown[$stream_field->field_slug] = lang_label($stream_field->field_name);
 
 		// -------------------------------------
 		// Get the field if we have the view
@@ -1218,18 +1198,20 @@ class Streams_cp extends CI_Driver {
 
 		if ($method == 'edit' and is_numeric($view_id))
 		{
-			$view = $CI->db->select()->limit(1)->where('id', $view_id)->get('data_views')->row();
+			$views = $CI->streams->views->get_views($stream_slug, $namespace_slug);
 
-			// If we have no view, we can't continue
-			if ( ! $view) show_error('Could not find view');
+			$view = $views[$view_id];
 		}
 		else
 		{
 			$view->is_locked = 'no';
-			$view->title = null;
+			$view->name = null;
 			$view->order_by = isset($stream_fields->{$stream->title_column}) ? $stream_fields->{$stream->title_column}->assign_id : null;
 			$view->sort = 'ASC';
-			$view->limit = 25;
+			$view->search = array();
+
+			$view->view_assignments = array();
+			$view->filters = array();
 		}
 
 
@@ -1249,7 +1231,6 @@ class Streams_cp extends CI_Driver {
 		{
 			$post_data = $CI->input->post();
 
-			print_r($post_data);die;
 
 			// Make sure we have a name - it's the only thing they could mess up really..
 			if (! isset($post_data['name']) or empty($post_data['name'])) $post_data['name'] = 'Untitled view';
@@ -1260,19 +1241,81 @@ class Streams_cp extends CI_Driver {
 				'name' => $post_data['name'],
 				'is_locked' => 'no',
 				'stream_id' => $stream->id,
+				'order_by' => $stream_fields->{$post_data['order']}->assign_id,
+				'sort' => $post_data['sort'],
+				'search' => isset($post_data['search']) ? $post_data['search'] : array(),
 				);
 
+			// Format search
+			foreach ($entry['search'] as &$search)
+			{
+				$search = $stream_fields->{$search}->assign_id;
+			}
+
+			$entry['search'] = implode('|', $entry['search']);
+
+
 			
+			// Do what now?
 			if ($method == 'new')
 			{
 				// Save
 				$CI->db->insert('data_views', $entry);
+
+				$view_id = $CI->db->insert_id();
 			}
 			else
 			{
-				// Save
+				// Update
 				$CI->db->update('data_views', $entry, array('id' => $view_id));
 			}
+
+
+			
+			// Clear view_assignments
+			$CI->db->delete('data_view_assignments', array('view_id' => $view_id));
+
+			// Add new ones
+			if (isset($post_data['column']))
+			{
+				foreach ($post_data['column'] as $k=>$column)
+				{
+					$CI->db->insert(
+						'data_view_assignments',
+						array(
+							'sort_order' => $k,
+							'stream_id' => $stream->id,
+							'view_id' => $view_id,
+							'assign_id' => $column,
+							)
+						);
+				}
+			}
+
+
+
+			// Clear view_filters
+			$CI->db->delete('data_view_filters', array('view_id' => $view_id));
+
+			// Add new ones
+			if (isset($post_data['f-'.$stream->stream_slug.'-filter']))
+			{
+				foreach ($post_data['f-'.$stream->stream_slug.'-filter'] as $k=>$filter)
+				{
+					$CI->db->insert(
+						'data_view_filters',
+						array(
+							'sort_order' => $k,
+							'stream_id' => $stream->id,
+							'view_id' => $view_id,
+							'assign_id' => $stream_fields->{$filter}->assign_id,
+							'condition' => $post_data['f-'.$stream->stream_slug.'-condition'][$k],
+							'default_value' => $post_data['f-'.$stream->stream_slug.'-value'][$k],
+							)
+						);
+				}
+			}
+
 	
 			redirect($return);
 		}

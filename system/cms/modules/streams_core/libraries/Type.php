@@ -453,7 +453,7 @@ class Type
 		if (isset($stream_field->field_type) and method_exists($this->types->{$stream_field->field_type}, 'filter_output'))
 		{
 			// Filter input name
- 			$stream_field->filter_input_name = 'f-'.$stream->stream_slug.'-'.$stream_field->field_slug;
+ 			$stream_field->filter_input_name = 'f-'.$stream->stream_slug.'-value[]';
 
 			return array(
 				'conditions' => $standard_filter_conditions,
@@ -463,7 +463,7 @@ class Type
 		elseif (isset($stream_field->field_type))
 		{
 			// Filter input name
- 			$stream_field->filter_input_name = 'f-'.$stream->stream_slug.'-'.$stream_field->field_slug;
+ 			$stream_field->filter_input_name = 'f-'.$stream->stream_slug.'-value[]';
 
 			// No method - use generic
 			switch ($stream_field->field_type)
@@ -500,7 +500,7 @@ class Type
 			// Use dropdown / picker / datepicker / etc
 			return array(
 				'conditions' => $standard_filter_conditions,
-				'input' => form_input('f-test-test', $value),
+				'input' => form_input('f-'.$stream->stream_slug.'-value[]', $value),
 				);
 		}
 	}

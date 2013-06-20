@@ -99,41 +99,99 @@ class Streams_views extends CI_Driver {
 
 
 		// Get our views
-		$views = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('is_locked', 'DESC')->order_by('name', 'ASC')->get('data_views')->result();
+		$db_views = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('is_locked', 'DESC')->order_by('name', 'ASC')->get('data_views')->result();
+
+
+		// Get our view_assignments as well
+		$view_assignments = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('view_id', 'ASC')->order_by('sort_order', 'ASC')->get('data_view_assignments')->result();
 
 
 		// Get our view stream_fields as well
-		$view_stream_fields = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('view_id', 'ASC')->order_by('sort_order', 'ASC')->get('data_view_assignments')->result();
+		$view_filters = $this->CI->db->select()->where('stream_id', $stream->id)->order_by('view_id', 'ASC')->order_by('sort_order', 'ASC')->get('data_view_filters')->result();
+
+
+		// Index on ID
+		$views = array();
+
+		foreach ($db_views as $view)
+		{
+			$views[$view->id] = $view;
+		}
 
 
 		
-		// Put our view stream_fields in place
+		// Put things together
 		foreach ($views as &$view) {
 
-			// Find stream_fields for this tab
-			$view->stream_fields = array();
+			// Find view_assignments for this tab
+			$view->view_assignments = array();
 
-			// We'll use this later
-			$view->stream_fields_field_slugs = array();
+			// Find view_filters for this tab
+			$view->view_filters = array();
 
-			foreach ($view_stream_fields as $view_stream_field)
+			// Expand these
+			$view->search = empty($view->search) ? array() : explode('|', $view->search);
+
+
+
+			// Get slugs for single items
+			foreach ($stream_fields as $stream_field)
 			{
-				// Only fot this tab..
-				if ($view_stream_field->view_id != $view->id) continue;
+				// Order_by
+				if ($view->order_by == $stream_field->assign_id) $view->order_by = $stream_field->field_slug;
+			}
+
+
+
+			// Get slugs for search
+			foreach ($view->search as &$search)
+			{
+				// Now load on the stream_field data
+				foreach ($stream_fields as $stream_field)
+				{
+					if ($search == $stream_field->assign_id) $search = $stream_field->field_slug;
+				}
+			}
+
+
+
+			// Get slugs for view_assignments (columns)
+			foreach ($view_assignments as $view_assignment)
+			{
+				// Only fot this view..
+				if ($view_assignment->view_id != $view->id) continue;
 
 				// Now load on the stream_field data
 				foreach ($stream_fields as $stream_field)
 				{
-					if ($view_stream_field->assign_id == $stream_field->assign_id)
+					if ($view_assignment->assign_id == $stream_field->assign_id)
 					{
 						// Never know when we'll need this
-						$view->stream_fields[] = $stream_field;
-
-						// We'll need this shortly
-						$view->stream_fields_field_slugs[] = $stream_field->field_slug;
+						$view->view_assignments[] = $stream_field->field_slug;
 					}
 				}
 			}
+
+
+
+			// Get slugs for advanced_filters filters
+			foreach ($view_filters as &$view_filter)
+			{
+				// Only fot this view..
+				if ($view_filter->view_id != $view->id) continue;
+
+				// Now load on the stream_field data
+				foreach ($stream_fields as $stream_field)
+				{
+					if ($view_filter->assign_id == $stream_field->assign_id)
+					{
+						$view_filter->field_slug = $stream_field->field_slug;
+
+						$view->view_filters[] = $view_filter;
+					}
+				}
+			}
+
 
 
 			// Build the query string
@@ -142,11 +200,45 @@ class Streams_views extends CI_Driver {
 			// Do filters
 
 			// Tack on the columns
-			$view->query_string .= '&'.$stream_slug.'-columns='.implode('|', $view->stream_fields_field_slugs);
+			if (! empty($view->view_assignments))
+			{
+				$view->query_string .= '&'.$stream_slug.'-column[]='.implode('&'.$stream_slug.'-column[]=', $view->view_assignments);
+			}
+
+			// Tack on ordering
+			$view->query_string .= '&order-'.$stream_slug.'='.$view->order_by;
+
+			// Tack on sorting
+			$view->query_string .= '&sort-'.$stream_slug.'='.$view->sort;
+
+			// Tack on filters
+			foreach ($view->view_filters as $view_filter)
+			{
+				$view->query_string .= '&f-'.$stream_slug.'-filter[]='.$view_filter->field_slug.'&f-'.$stream_slug.'-condition[]='.$view_filter->condition.'&f-'.$stream_slug.'-value[]='.$this->CI->parser->parse_string($view_filter->default_value, $this->CI, true);
+			}
 		}
+
 
 
 		// Yaaaay
 		return $views;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Delete a view
+	 *
+	 * @access	public
+	 * @param	int - view id
+	 * @return	object
+	 */
+	public function delete_view($view_id)
+	{
+		$this->CI->db->delete('data_views', array('id' => $view_id));
+		$this->CI->db->delete('data_view_assignments', array('view_id' => $view_id));
+		$this->CI->db->delete('data_view_filters', array('view_id' => $view_id));
+
+		return true;
 	}
 }

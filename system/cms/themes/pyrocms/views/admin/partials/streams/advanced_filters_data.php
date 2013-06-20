@@ -43,10 +43,11 @@
 	<section class="streams-<?php echo $slug; ?>-filter-data">
 
 		<div class="conditions">
-			<?php echo form_dropdown($stream->stream_slug.'-f-condition', $stream_field->filter_output['conditions'], null, 'class="skip no-margin"'); ?>
+			<?php echo form_dropdown('f-'.$stream->stream_slug.'-condition[]', $stream_field->filter_output['conditions'], null, 'class="skip no-margin"'); ?>
 		</div>
 
 		<div class="input">
+			<?php echo form_hidden('f-'.$stream->stream_slug.'-filter[]', $slug); ?>
 			<?php echo $stream_field->filter_output['input']; ?>
 		</div>
 

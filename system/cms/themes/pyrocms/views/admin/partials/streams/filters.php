@@ -6,50 +6,55 @@
 	<form id="<?php echo $stream->stream_slug; ?>-filters" class="padded no-margin bg-grayLighadvanced-<?php echo $stream->stream_slug; ?>-filters border-bottom border-color-grayLighter" method="get">
 
 		
-		<!-- Search -->
-		<?php if (isset($filters['search']) and ! empty($filters['search'])): ?>
+		<?php if ($this->input->get($stream->stream_slug.'-view')): ?>
+			<?php echo form_hidden($stream->stream_slug.'-view', $this->input->get($stream->stream_slug.'-view')); ?>
+		<?php endif; ?>
 
-		<?php 
-
-			// Build our placeholder real quick
-			$placeholder = array();
-			foreach ($filters['search'] as $field_slug)
-			{
-				$placeholder[] = lang_label($stream_fields->$field_slug->field_name);
-			}
-		?>
+		
 		<div class="row-fluid">
 			
 			<div class="span10">
 
-				<input type="hidden" name="search-<?php echo $stream->stream_slug; ?>" value="<?php echo implode('|', $filters['search']); ?>"/>
+				<!-- Search -->
+				<?php if (isset($filters['search']) and ! empty($filters['search'])): ?>
 
-				<label class="display-inline margin-right">
-					Search:
-					<input type="text" class="input-xxlarge" name="search-<?php echo $stream->stream_slug; ?>-term" placeholder="<?php echo implode(', ', $placeholder); ?>" value="<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>"/>
-				</label>
+				<?php 
+
+					// Build our placeholder real quick
+					$placeholder = array();
+					foreach ($filters['search'] as $field_slug)
+					{
+						$placeholder[] = lang_label($stream_fields->$field_slug->field_name);
+					}
+				?>
+
+					<input type="hidden" name="search-<?php echo $stream->stream_slug; ?>" value="<?php echo implode('|', $filters['search']); ?>"/>
+
+					<label class="display-inline margin-right">
+						Search:
+						<input type="text" class="input-xxlarge" name="search-<?php echo $stream->stream_slug; ?>-term" placeholder="<?php echo implode(', ', $placeholder); ?>" value="<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>"/>
+					</label>
+
+				<?php endif; ?>
+				
 
 				<button class="btn btn-primary btn-small">Search</button>
 				<a href="<?php echo site_url(uri_string()); ?>" class="btn btn-small">Clear</a>
 
 			</div>
 
-			<div class="span2 text-right">				
-				<a href="#" data-toggle="toggle" data-target=".advanced-<?php echo $stream->stream_slug; ?>-filters" data-state="<?php echo $this->input->get('filter-'.$stream->stream_slug) ? 'visible' : 'hidden'; ?>" data-collapsed-chevron="left">
+			<div class="span2 text-right">
+				<a href="#" data-toggle="toggle" data-target=".advanced-<?php echo $stream->stream_slug; ?>-filters" data-state="<?php echo $this->input->get('f-'.$stream->stream_slug.'-filter') ? 'visible' : 'hidden'; ?>" data-collapsed-chevron="left">
 					Advanced <small><i class="icon-chevron-down"></i></small>
 				</a>
 			</div>
 			
 		</div>
-		<?php endif; ?>
 		<!-- /Defined Filters -->
 
 
 		<!-- Advanced Filters -->
 		<section class="margin-top advanced-filters advanced-<?php echo $stream->stream_slug; ?>-filters" data-stream-slug="<?php echo $stream->stream_slug; ?>">
-
-			<!-- We are filtering?? -->
-			<input type="hidden" value="true" class="filtering-flag" <?php echo $this->input->get('filter-'.$stream->stream_slug) ? 'name="filter-'.$stream->stream_slug.'"' : null; ?>/>
 
 			
 			<div class="row-fluid">
@@ -64,17 +69,11 @@
 							</th>
 						</tr>
 
-						<?php if ($this->input->get('filter-'.$stream->stream_slug)): ?>
-						<?php $url_variables = $this->input->get(); ?>
-						<?php foreach ($url_variables as $filter => $value): ?>
+						<?php if ($this->input->get('f-'.$stream->stream_slug.'-filter')): ?>
+						<?php $query_string_variables = $this->input->get(); ?>
+						<?php foreach ($query_string_variables['f-'.$stream->stream_slug.'-filter'] as $k => $filter): ?>
 
-							<?php if (substr($filter, 0, 2) != 'f-') continue; ?>
-							
-							<?php $filter = substr($filter, 2); ?>
-							<?php if (current(explode('-', $filter)) != $stream->stream_slug) continue; ?>
-							<?php $filter = str_replace($stream->stream_slug.'-', '', $filter); ?>
-
-							<?php $filter_output = $this->type->filter_output($stream, $stream_fields->$filter, $this->input->get('f-'.$stream->stream_slug.'-'.$filter)); ?>
+							<?php $filter_output = $this->type->filter_output($stream, $stream_fields->$filter, $query_string_variables['f-'.$stream->stream_slug.'-value'][$k]); ?>
 
 							<tr>
 				
@@ -90,10 +89,11 @@
 								</td>
 
 								<td width="217" class="streams-field-filter-conditions">
-									<?php echo form_dropdown($stream->stream_slug.'-'.$filter.'-f-condition', $filter_output['conditions'], $this->input->get($stream->stream_slug.'-'.$filter.'-f-condition'), 'class="skip no-margin"'); ?>
+									<?php echo form_dropdown('f-'.$stream->stream_slug.'-condition[]', $filter_output['conditions'], $query_string_variables['f-'.$stream->stream_slug.'-condition'][$k], 'class="skip no-margin"'); ?>
 								</td>
 
 								<td class="vertical-align-middle streams-field-filter-input">
+									<?php echo form_hidden('f-'.$stream->stream_slug.'-filter[]', $filter); ?>
 									<?php echo $filter_output['input']; ?>
 								</td>
 
