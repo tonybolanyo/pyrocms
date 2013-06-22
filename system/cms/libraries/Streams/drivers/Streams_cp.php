@@ -396,6 +396,12 @@ class Streams_cp extends CI_Driver {
 			$data['return'] = $extra['return'];
 		}
 
+		// Set cancel uri
+		if (isset($extra['cancel_uri']))
+		{
+			$data['cancel_uri'] = $extra['cancel_uri'];
+		}
+
 		// Set the no fields mesage. This has a lang default.
 		if (isset($extra['no_fields_message']))
 		{

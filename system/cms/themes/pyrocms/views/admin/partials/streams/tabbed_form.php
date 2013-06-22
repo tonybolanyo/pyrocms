@@ -51,7 +51,11 @@
 
 	<div class="btn-group padded">
 		<button type="submit" name="btnAction" value="save" class="btn blue"><span><?php echo lang('buttons:save'); ?></span></button>	
-		<a href="<?php echo site_url(isset($return) ? $return : 'admin/streams/entries/index/'.$stream->id); ?>" class="btn"><?php echo lang('buttons:cancel'); ?></a>
+		<?php if (isset($cancel_uri)): ?>
+			<a href="<?php echo site_url($cancel_uri); ?>" class="btn"><?php echo lang('buttons:cancel'); ?></a>
+		<?php else: ?>
+			<a href="<?php echo site_url(isset($return) ? $return : 'admin/streams/entries/index/'.$stream->id); ?>" class="btn"><?php echo lang('buttons:cancel'); ?></a>
+		<?php endif; ?>
 	</div>
 
 
