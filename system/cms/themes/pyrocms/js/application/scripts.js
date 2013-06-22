@@ -197,7 +197,7 @@ jQuery(function($) {
 
 		
 		// Confirmation
-		$('a.confirm').bind('click', function(event){
+		$('.confirm').on('click', function(event){
 			event.preventDefault();
 
 			var href		= $(this).attr('href'),
