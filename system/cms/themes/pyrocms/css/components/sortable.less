@@ -2,19 +2,18 @@ body.dragging, body.dragging * {
   cursor: move !important;
 }
 
-.dragged {
+.sortable .dragged {
   position: absolute;
   opacity: 0.5;
   z-index: 2000;
+  /* Extend this in your module */
 }
 
-ol.example li.placeholder {
+.sortable .placeholder {
   position: relative;
-  /** More li styles **/
-}
-ol.example li.placeholder:before {
-  position: absolute;
-  /** Define arrowhead **/
+  background: @white;
+  border: 1px dashed @grayLight;
+  /* Extend this in your module */
 }
 
 
@@ -28,7 +27,7 @@ ol.example li.placeholder:before {
   position: relative;
 }
 
-.sortable.nav.nav-tabs li.placeholder
+.sortable.nav.nav-tabs .placeholder
 {
   width: 70px;
   height: 34px;
