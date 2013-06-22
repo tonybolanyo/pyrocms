@@ -56,7 +56,14 @@
 						}
 						else
 						{
-							echo $data_item->$column;
+							if (substr($data_item->$column, 0, 5) == 'lang:')
+							{
+								echo lang_label($data_item->$column);
+							}
+							else
+							{
+								echo $data_item->$column;
+							}
 						}
 						
 					?>
@@ -82,7 +89,14 @@
 							}
 							else
 							{
-								echo $data_item->$view_option;
+								if (substr($data_item->$view_option, 0, 5) == 'lang:')
+								{
+									echo lang_label($data_item->$view_option);
+								}
+								else
+								{
+									echo $data_item->$view_option;
+								}
 							}
 							
 						?>
