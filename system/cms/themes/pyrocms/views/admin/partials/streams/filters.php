@@ -44,7 +44,7 @@
 			</div>
 
 			<div class="span2 text-right">
-				<?php if (isset($filters['advanced_filters']) and $filters['advanced_filters'] != false): ?>
+				<?php if (! isset($filters['advanced_filters']) or $filters['advanced_filters'] !== false): ?>
 				<a href="#" data-toggle="toggle" data-target=".advanced-<?php echo $stream->stream_slug; ?>-filters" data-state="<?php echo $this->input->get('f-'.$stream->stream_slug.'-filter') ? 'visible' : 'hidden'; ?>" data-collapsed-chevron="left">
 					Advanced <small><i class="icon-chevron-down"></i></small>
 				</a>
@@ -56,7 +56,7 @@
 
 
 		<!-- Advanced Filters -->
-		<?php if (isset($filters['advanced_filters']) and $filters['advanced_filters'] != false): ?>
+		<?php if (! isset($filters['advanced_filters']) or $filters['advanced_filters'] !== false): ?>
 		<section class="margin-top advanced-filters advanced-<?php echo $stream->stream_slug; ?>-filters" data-stream-slug="<?php echo $stream->stream_slug; ?>">
 
 			
