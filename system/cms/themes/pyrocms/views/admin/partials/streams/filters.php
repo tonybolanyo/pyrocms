@@ -3,7 +3,7 @@
 
 	
 	<!-- Everything is called from this magical form -->
-	<form id="<?php echo $stream->stream_slug; ?>-filters" class="padded no-margin bg-grayLighadvanced-<?php echo $stream->stream_slug; ?>-filters border-bottom border-color-grayLighter" method="get">
+	<form id="advanced-<?php echo $stream->stream_slug; ?>-filters" class="advanced-filters padded no-margin bg-grayLigh border-bottom border-color-grayLighter" method="get">
 
 		
 		<?php if ($this->input->get($stream->stream_slug.'-view')): ?>
