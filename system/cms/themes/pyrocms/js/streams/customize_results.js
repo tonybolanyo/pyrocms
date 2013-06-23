@@ -2,7 +2,7 @@
 	$(function(){
 
 		// When adding / removing a column from the view
-		$('input.show-column').on('change', function(){
+		$(document).on('change', 'input.show-column', function(){
 
 			// Get started
 			var columns = new Array();
