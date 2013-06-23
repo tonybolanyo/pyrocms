@@ -138,6 +138,7 @@ class Streams_cp extends CI_Driver {
   			'stream_fields'	=> $stream_fields,
   			'buttons'		=> isset($extra['buttons']) ? $extra['buttons'] : null,
   			'filters'		=> isset($extra['filters']) ? $extra['filters'] : null,
+  			'view_options'	=> isset($extra['view_options']) ? $extra['view_options'] : false,
   		);
  
   		// -------------------------------------

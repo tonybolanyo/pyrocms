@@ -296,7 +296,7 @@ jQuery(function($) {
 
 
 		// Collapse / Expand API
-		$('[data-toggle^="toggle"]').on('click', function(){
+		$(document).on('click', '[data-toggle^="toggle"]', function(){
 
 			// What are we toggling?
 			var target = $(this).data('target');

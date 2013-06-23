@@ -39,7 +39,7 @@
 				
 
 				<button class="btn btn-primary btn-small">Search</button>
-				<a href="<?php echo site_url(uri_string()); ?>" class="btn btn-small">Clear</a>
+				<a href="<?php echo site_url(uri_string()); ?>" class="btn btn-small clear">Clear</a>
 
 			</div>
 

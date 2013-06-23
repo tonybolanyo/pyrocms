@@ -28,10 +28,18 @@
 						<th><?php echo lang_label($stream_fields->$column->field_name); ?></th>
 						<?php endforeach; ?>
 
+					<?php elseif (isset($view_options) and is_array($view_options)): ?>
+					
+						<?php foreach ($view_options as $view_option): ?>
+						<th><?php echo lang_label($stream_fields->$view_option->field_name); ?></th>
+						<?php endforeach; ?>
+
 					<?php else: ?>
+
 						<?php foreach ($stream->view_options as $view_option): ?>
 						<th><?php echo lang_label($stream_fields->$view_option->field_name); ?></th>
 						<?php endforeach; ?>
+
 					<?php endif; ?>
 				    <th></th>
 				</tr>
@@ -65,6 +73,38 @@
 								else
 								{
 									echo $data_item->$column;
+								}
+							}
+							
+						?>
+						</td>
+						<?php endforeach; ?>
+
+					<?php elseif (isset($view_options) and is_array($view_options)): ?>
+
+						<?php foreach($view_options as $view_option ): ?>
+						<td class="streams-<?php echo $view_option; ?>-column">
+										
+						<?php
+						
+							if ($view_option == 'created' or $view_option == 'updated')
+							{
+								if ($data_item->$view_option):echo date('M j Y g:i a', $data_item->$view_option); endif;	
+							}				
+							elseif ($view_option == 'created_by')
+							{
+							
+								?><a href="<?php echo site_url('admin/users/edit/'. $data_item->created_by_user_id); ?>"><?php echo $data_item->created_by_username; ?></a><?php
+							}
+							else
+							{
+								if (substr($data_item->$view_option, 0, 5) == 'lang:')
+								{
+									echo lang_label($data_item->$view_option);
+								}
+								else
+								{
+									echo $data_item->$view_option;
 								}
 							}
 							
