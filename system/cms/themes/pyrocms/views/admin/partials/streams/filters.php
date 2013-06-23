@@ -32,7 +32,7 @@
 
 					<label class="display-inline margin-right">
 						Search:
-						<input type="text" class="input-xxlarge" name="search-<?php echo $stream->stream_slug; ?>-term" placeholder="<?php echo implode(', ', $placeholder); ?>" value="<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>"/>
+						<input type="text" name="search-<?php echo $stream->stream_slug; ?>-term" placeholder="<?php echo implode(', ', $placeholder); ?>" value="<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>" style="width: 60%;"/>
 					</label>
 
 				<?php endif; ?>
