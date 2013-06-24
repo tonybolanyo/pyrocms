@@ -13,7 +13,7 @@
 		
 		<div class="row-fluid">
 			
-			<div class="span10">
+			<div class="span8">
 
 				<!-- Search -->
 				<?php if (isset($filters['search']) and ! empty($filters['search'])): ?>
@@ -32,19 +32,23 @@
 
 					<label class="display-inline margin-right">
 						Search:
-						<input type="text" name="search-<?php echo $stream->stream_slug; ?>-term" placeholder="<?php echo implode(', ', $placeholder); ?>" value="<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>" style="width: 60%;"/>
+						<input type="text" name="search-<?php echo $stream->stream_slug; ?>-term" placeholder="<?php echo implode(', ', $placeholder); ?>" value="<?php echo $this->input->get('search-'.$stream->stream_slug.'-term'); ?>" style="width: 95%;"/>
 					</label>
 
 				<?php endif; ?>
-				
-
-				<button class="btn btn-primary btn-small">Search</button>
-				<a href="<?php echo site_url(uri_string()); ?>" class="btn btn-small clear">Clear</a>
 
 			</div>
 
-			<div class="span2 text-right">
+			<div class="span4 text-right">
+
+				<div class="pull-left">
+					<br/>
+					<button class="btn btn-primary btn-small">Search</button>
+					<a href="<?php echo site_url(uri_string()); ?>" class="btn btn-small clear">Clear</a>
+				</div>
+
 				<?php if (! isset($filters['advanced_filters']) or $filters['advanced_filters'] !== false): ?>
+				<br/>
 				<a href="#" data-toggle="toggle" data-target=".advanced-<?php echo $stream->stream_slug; ?>-filters" data-state="<?php echo $this->input->get('f-'.$stream->stream_slug.'-filter') ? 'visible' : 'hidden'; ?>" data-collapsed-chevron="left">
 					Advanced <small><i class="icon-chevron-down"></i></small>
 				</a>
