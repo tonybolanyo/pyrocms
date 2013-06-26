@@ -1,22 +1,40 @@
-<section class="title">
-	<h4><?php echo lang('user:list_title') ?></h4>
-</section>
+<section class="padded">
+<div class="container-fluid">
 
-<section class="item">
-	<div class="content">
-	
-		<?php template_partial('filters') ?>
-	
-		<?php echo form_open('admin/users/action') ?>
+
+	<!-- Box -->
+	<section class="box">
+
+		<!-- Header -->
+		<section class="box-header">
+			<span class="title"><?php echo lang('user:list_title') ?></span>
+		</section>
+
+
+		<!-- Box Content -->
+		<section class="box-content">
+
+
+			<?php template_partial('filters') ?>
 		
-			<div id="filter-stage">
-				<?php template_partial('tables/users') ?>
-			</div>
+			<?php echo form_open('admin/users/action') ?>
+			
+				<div id="filter-stage">
+					<?php template_partial('tables/users') ?>
+				</div>
+			
+				<div class="table_action_buttons padding-left padding-right">
+					<?php $this->load->view('admin/partials/buttons', array('buttons' => array('activate', 'delete') )) ?>
+				</div>
 		
-			<div class="table_action_buttons">
-				<?php $this->load->view('admin/partials/buttons', array('buttons' => array('activate', 'delete') )) ?>
-			</div>
-	
-		<?php echo form_close() ?>
-	</div>
+			<?php echo form_close() ?>
+
+
+		</section>
+		<!-- /Box Content -->
+
+	</section>
+	<!-- /Box -->
+
+</div>
 </section>

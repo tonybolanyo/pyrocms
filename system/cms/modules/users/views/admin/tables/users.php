@@ -36,9 +36,13 @@
 					<td class="collapse"><?php echo $member->active ? lang('global:yes') : lang('global:no')  ?></td>
 					<td class="collapse"><?php echo format_date($member->created_on) ?></td>
 					<td class="collapse"><?php echo ($member->last_login > 0 ? format_date($member->last_login) : lang('user:never_label')) ?></td>
-					<td class="actions">
-						<?php echo anchor('admin/users/edit/' . $member->id, lang('global:edit'), array('class'=>'button edit')) ?>
-						<?php echo anchor('admin/users/delete/' . $member->id, lang('global:delete'), array('class'=>'confirm button delete')) ?>
+					<td>
+
+						<div class="pull-left">
+							<?php echo anchor('admin/users/edit/' . $member->id, lang('global:edit'), array('class'=>'btn btn-small btn-warning')) ?>
+							<?php echo anchor('admin/users/delete/' . $member->id, lang('global:delete'), array('class'=>'confirm btn btn-small btn-danger')) ?>
+						</div>
+
 					</td>
 				</tr>
 			<?php endforeach ?>
